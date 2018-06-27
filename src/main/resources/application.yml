@@ -1,0 +1,40 @@
+mybatis:
+    config-location: classpath:mybatis/mybatis-config.xml
+    mapper-locations: classpath:mybatis/mapper/*.xml
+server:
+    port: 9400
+    servlet:
+        context-path: /whm
+spring:
+    application:
+        name: whm
+    datasource:
+        url: jdbc:mysql://127.0.0.1:3306/whmdb
+        password: whm
+        username: whm
+        driverClassName: com.mysql.jdbc.Driver
+        jmx-enabled: true
+        tomcat:
+            initial-size: 1
+            max-idle: 1
+            max-wait: 10000
+            min-idle: 1
+            test-on-borrow: true
+            test-while-idle: true
+            time-between-eviction-runs-millis: 30000
+            validation-query: SELECT 1 FROM DUAL
+    mvc:
+        static-path-pattern: /**
+    resources:
+        static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:D:/wh_sy/release/
+    
+    servlet:
+        multipart:
+            maxFileSize: 50Mb
+            maxRequestSize: 50Mb
+    security:
+       user:
+          name: whm
+          password: whm
+          roles: ROLE_ADMIN
+      
