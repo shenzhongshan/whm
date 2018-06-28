@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crfsdi.whm.repository.UserRepository">
+  <resultMap id="BaseResultMap" type="com.crfsdi.whm.model.Person">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="staff_id" jdbcType="VARCHAR" property="username" />
+    <result column="name" jdbcType="VARCHAR" property="staffName" />
+    <result column="gender" jdbcType="CHAR" property="gender" />
+    <result column="birth_date" jdbcType="DATE" property="birthDate" />
+    <result column="position" jdbcType="VARCHAR" property="position" />
+    <result column="job_title" jdbcType="VARCHAR" property="jobTitle" />
+    <result column="level" jdbcType="INTEGER" property="level" />
+    <result column="pwd" jdbcType="VARCHAR" property="password" />
+    <result column="is_sys" jdbcType="CHAR" property="sys" />
+  </resultMap>
+  <sql id="Base_Column_List">
+	id,
+	staff_id,
+	name,
+	gender,
+	birth_date,
+	position,
+	job_title,
+	level,
+	pwd,
+	is_sys
+  </sql>
+  <select id="findByUsername" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from employee_t
+    where staff_id = #{username,jdbcType=VARCHAR}
+  </select>
+  <delete id="delete" parameterType="java.lang.String">
+    delete from employee_t
+    where staff_id = #{username,jdbcType=VARCHAR}
+  </delete>
+  <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="com.crfsdi.whm.model.Person">
+    insert into employee_t (<include refid="Base_Column_List" />)
+    values (#{username,jdbcType=VARCHAR}, #{staffName,jdbcType=VARCHAR}, 
+      #{gender,jdbcType=CHAR}, #{birthDate,jdbcType=DATE}, #{position,jdbcType=VARCHAR}, 
+      #{jobTitle,jdbcType=VARCHAR}, #{level,jdbcType=INTEGER}, #{password,jdbcType=VARCHAR}, 
+      #{sys,jdbcType=CHAR} 
+    )
+  </insert>
+
+  <update id="update" parameterType="com.crfsdi.whm.model.Person">
+    update employee_t
+    <set>
+      <if test="staffName != null">
+        name = #{staffName,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null">
+        gender = #{gender,jdbcType=CHAR},
+      </if>
+      <if test="birthDate != null">
+        birth_date = #{birthDate,jdbcType=DATE},
+      </if>
+      <if test="position != null">
+        position = #{position,jdbcType=VARCHAR},
+      </if>
+      <if test="jobTitle != null">
+        job_title = #{jobTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null">
+        level = #{level,jdbcType=INTEGER},
+      </if>
+      <if test="password != null">
+        pwd = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="sys != null">
+        is_sys = #{sys,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where staff_id = #{username,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

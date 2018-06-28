@@ -16,6 +16,7 @@ import com.crfsdi.whm.filter.JWTLoginFilter;
 import com.crfsdi.whm.filter.JwtAuthenticationFilter;
 
 @Configuration
+@EnableWebSecurity
 @Order(SecurityProperties.BASIC_AUTH_ORDER)
 public class WhmWebSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
@@ -35,9 +36,9 @@ public class WhmWebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/users/signup").permitAll()
+                .antMatchers(HttpMethod.POST, "/users/signup","/users/resetAdminPwd").permitAll()
                 .anyRequest().authenticated()
-                .and()
+                .and().httpBasic().and()
                 .addFilter(new JWTLoginFilter(authenticationManager()))
                 .addFilter(new JwtAuthenticationFilter(authenticationManager()));
     }

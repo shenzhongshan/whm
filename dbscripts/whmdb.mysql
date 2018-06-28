@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50534
 File Encoding         : 65001
 
-Date: 2018-06-28 14:53:06
+Date: 2018-06-28 16:04:02
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -71,7 +71,7 @@ CREATE TABLE `projects_t` (
 -- ----------------------------
 DROP TABLE IF EXISTS `roles_t`;
 CREATE TABLE `roles_t` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` varchar(10) NOT NULL COMMENT '用户标识,工号或者系统用户名',
   `role_name` varchar(20) NOT NULL COMMENT '角色名,以ROLE_为前缀的名称,大写',
   PRIMARY KEY (`id`)
@@ -82,7 +82,7 @@ CREATE TABLE `roles_t` (
 -- ----------------------------
 DROP TABLE IF EXISTS `work_atendance_t`;
 CREATE TABLE `work_atendance_t` (
-  `id` int(10) NOT NULL,
+  `id` int(10) NOT NULL AUTO_INCREMENT,
   `month` varchar(6) NOT NULL COMMENT '月份,YYYYMM',
   `staff_id` varchar(10) NOT NULL COMMENT '工号',
   `month_occur_rate` float(6,2) DEFAULT NULL COMMENT '工时识别率',
@@ -121,5 +121,7 @@ CREATE TABLE `work_time_sheet_t` (
   `start_date` date NOT NULL COMMENT '本月工作起始日期',
   `end_date` date NOT NULL COMMENT '本月工作结束日期',
   `create_time` datetime NOT NULL COMMENT '记录更新时间',
+  `work_comfirm` float(5,2) DEFAULT '100.00' COMMENT '工效认定',
+  `points` float(7,2) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
