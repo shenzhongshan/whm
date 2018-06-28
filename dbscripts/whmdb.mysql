@@ -1,0 +1,125 @@
+/*
+Navicat MySQL Data Transfer
+
+Source Server         : whm
+Source Server Version : 50534
+Source Host           : localhost:3306
+Source Database       : whmdb
+
+Target Server Type    : MYSQL
+Target Server Version : 50534
+File Encoding         : 65001
+
+Date: 2018-06-28 14:53:06
+*/
+
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for employee_t
+-- ----------------------------
+DROP TABLE IF EXISTS `employee_t`;
+CREATE TABLE `employee_t` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `staff_id` varchar(10) NOT NULL COMMENT '工号',
+  `name` varchar(50) DEFAULT NULL COMMENT '姓名',
+  `gender` char(1) DEFAULT NULL COMMENT '性别,M-男,F-女',
+  `birth_date` date DEFAULT NULL COMMENT '出生日期',
+  `position` varchar(5) DEFAULT NULL COMMENT '职务,PN001-主任,PN002-副主任,PN003-一般设计人员',
+  `job_title` varchar(5) DEFAULT NULL COMMENT '职称,,JT001-教授级高级工程师,JT002-高级工程师任,JT003-工程师,JT004-助理工程师,JT005-见习生',
+  `level` int(3) unsigned zerofill DEFAULT NULL COMMENT '岗位级别',
+  `pwd` varchar(255) DEFAULT NULL COMMENT '登录密码',
+  `is_sys` char(1) NOT NULL DEFAULT 'N' COMMENT '是否系统内置用户,Y-是，N-员工',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uidx_employee_staff_id` (`staff_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for projects_pre_t
+-- ----------------------------
+DROP TABLE IF EXISTS `projects_pre_t`;
+CREATE TABLE `projects_pre_t` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `prj_id` int(10) NOT NULL COMMENT '项目编号',
+  `month` int(10) NOT NULL COMMENT '年月,格式:YYYYMM',
+  `prj_name` varchar(255) NOT NULL COMMENT '项目名称',
+  `prj_standard` varchar(50) DEFAULT NULL COMMENT '项目标准',
+  `prj_type` varchar(50) DEFAULT NULL COMMENT '项目类型',
+  `prj_scale` decimal(12,0) DEFAULT NULL COMMENT '项目规模',
+  `create_date` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for projects_t
+-- ----------------------------
+DROP TABLE IF EXISTS `projects_t`;
+CREATE TABLE `projects_t` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `prj_id` int(10) NOT NULL COMMENT '项目编号',
+  `month` int(10) NOT NULL COMMENT '年月,格式:YYYYMM',
+  `prj_name` varchar(255) NOT NULL COMMENT '项目名称',
+  `prj_standard` varchar(50) DEFAULT NULL COMMENT '项目标准',
+  `prj_type` varchar(50) DEFAULT NULL COMMENT '项目类型',
+  `prj_scale` decimal(12,0) DEFAULT NULL COMMENT '项目规模',
+  `create_date` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for roles_t
+-- ----------------------------
+DROP TABLE IF EXISTS `roles_t`;
+CREATE TABLE `roles_t` (
+  `id` int(11) NOT NULL,
+  `user_id` varchar(10) NOT NULL COMMENT '用户标识,工号或者系统用户名',
+  `role_name` varchar(20) NOT NULL COMMENT '角色名,以ROLE_为前缀的名称,大写',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for work_atendance_t
+-- ----------------------------
+DROP TABLE IF EXISTS `work_atendance_t`;
+CREATE TABLE `work_atendance_t` (
+  `id` int(10) NOT NULL,
+  `month` varchar(6) NOT NULL COMMENT '月份,YYYYMM',
+  `staff_id` varchar(10) NOT NULL COMMENT '工号',
+  `month_occur_rate` float(6,2) DEFAULT NULL COMMENT '工时识别率',
+  `month_fill_rate` float(6,2) DEFAULT NULL COMMENT '工时填报率',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for work_time_sheet_pre_t
+-- ----------------------------
+DROP TABLE IF EXISTS `work_time_sheet_pre_t`;
+CREATE TABLE `work_time_sheet_pre_t` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `staff_id` varchar(10) NOT NULL COMMENT '工号',
+  `month` varchar(6) NOT NULL COMMENT '月份,YYYYMM',
+  `prj_id` int(10) NOT NULL COMMENT '项目编号',
+  `prj_phase` varchar(50) DEFAULT NULL COMMENT '项目阶段',
+  `prj_position` varchar(50) DEFAULT NULL COMMENT '项目中本人任职',
+  `start_date` date NOT NULL COMMENT '本月工作起始日期',
+  `end_date` date NOT NULL COMMENT '本月工作结束日期',
+  `create_time` datetime NOT NULL COMMENT '记录更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for work_time_sheet_t
+-- ----------------------------
+DROP TABLE IF EXISTS `work_time_sheet_t`;
+CREATE TABLE `work_time_sheet_t` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `staff_id` varchar(10) NOT NULL COMMENT '工号',
+  `month` varchar(6) NOT NULL COMMENT '月份,YYYYMM',
+  `prj_id` int(10) NOT NULL COMMENT '项目编号',
+  `prj_phase` varchar(50) DEFAULT NULL COMMENT '项目阶段',
+  `prj_position` varchar(50) DEFAULT NULL COMMENT '项目中本人任职',
+  `start_date` date NOT NULL COMMENT '本月工作起始日期',
+  `end_date` date NOT NULL COMMENT '本月工作结束日期',
+  `create_time` datetime NOT NULL COMMENT '记录更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
