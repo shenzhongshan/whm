@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crfsdi.whm.repository.WorkAtendanceRepository">
+  <resultMap id="BaseResultMap" type="com.crfsdi.whm.model.WorkAtendance">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="month" jdbcType="VARCHAR" property="month" />
+    <result column="staff_id" jdbcType="VARCHAR" property="staffId" />
+    <result column="month_occur_rate" jdbcType="FLOAT" property="monthOccurRate" />
+    <result column="month_fill_rate" jdbcType="FLOAT" property="monthFillRate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+	id,
+	month,
+	staff_id,
+	month_occur_rate,
+	month_fill_rate
+  </sql>
+  
+  <select id="load" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from work_atendance_t
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from work_atendance_t
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <select id="findByStaffId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from work_atendance_t
+    where staff_id = #{staffId,jdbcType=VARCHAR}
+  </select>
+  
+  <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="com.crfsdi.whm.model.WorkAtendance">
+    insert into work_atendance_t (<include refid="Base_Column_List" />)
+    values (#{month,jdbcType=VARCHAR}, #{staffId,jdbcType=VARCHAR}, 
+      #{monthOccurRate,jdbcType=FLOAT}, #{monthOccurRate,jdbcType=FLOAT}
+    )
+  </insert>
+  
+  <insert id="saveMore" useGeneratedKeys="true" keyProperty="id" parameterType="list">
+    insert into work_atendance_t (<include refid="Base_Column_List" />)
+    values 
+       <foreach collection="list" item="obj" index="index" separator="," > 
+          (#{obj.month,jdbcType=VARCHAR}, #{obj.staffId,jdbcType=VARCHAR}, 
+           #{obj.monthOccurRate,jdbcType=FLOAT}, #{obj.monthOccurRate,jdbcType=FLOAT})
+       </foreach> 
+  </insert>
+
+  <update id="update" parameterType="com.crfsdi.whm.model.WorkAtendance">
+    update work_atendance_t
+    <set>
+      <if test="month != null">
+        month = #{month,jdbcType=VARCHAR},
+      </if>
+      <if test="staffId != null">
+        staff_id = #{staffId,jdbcType=CHAR},
+      </if>
+      <if test="monthOccurRate != null">
+        month_occur_rate = #{monthOccurRate,jdbcType=FLOAT},
+      </if>
+      <if test="monthOccurRate != null">
+        month_occur_rate = #{monthOccurRate,jdbcType=FLOAT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+</mapper>

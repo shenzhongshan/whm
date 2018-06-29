@@ -1,14 +1,8 @@
 package com.crfsdi.whm.repository;
 
-import java.util.List;
-
-
 import com.crfsdi.whm.model.Person;
 
-public interface UserRepository{
+public interface UserRepository extends BaseRepository<Person>{
     Person findByUsername(String username);
-    void savePersons(List<Person> persons);
-    void save(Person person);
-    void update(Person person);
-    void delete(String username);
+    void deleteByUsername(String username);
 }

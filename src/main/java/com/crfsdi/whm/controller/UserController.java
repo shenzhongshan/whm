@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.crfsdi.whm.model.Person;
 import com.crfsdi.whm.repository.UserRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -22,6 +25,8 @@ public class UserController {
 
     @PostMapping("/signup")
     public void signUp(@RequestBody Person user) {
+        log.info("这里注册的都算系统内置用户");
+    	user.setSys("Y");
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }

@@ -1,6 +1,7 @@
 package com.crfsdi.whm.model;
 
 import java.util.Date;
+import java.util.List;
 
 import lombok.Data;
 
@@ -17,4 +18,5 @@ public class Person {
     private String jobTitle;
     private Integer level;
     private String sys;
+    private List<Role> roles;
 }

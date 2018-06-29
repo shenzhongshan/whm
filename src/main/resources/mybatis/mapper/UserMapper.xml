@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.crfsdi.whm.repository.UserRepository">
+  <resultMap id="roleMap" type="com.crfsdi.whm.model.Role">
+      <result column="role_name" jdbcType="VARCHAR" property="name" />
+  </resultMap>
   <resultMap id="BaseResultMap" type="com.crfsdi.whm.model.Person">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="staff_id" jdbcType="VARCHAR" property="username" />
@@ -12,29 +15,47 @@
     <result column="level" jdbcType="INTEGER" property="level" />
     <result column="pwd" jdbcType="VARCHAR" property="password" />
     <result column="is_sys" jdbcType="CHAR" property="sys" />
+    <collection property="roles" ofType="com.crfsdi.whm.model.Role" resultMap="roleMap"/>
   </resultMap>
   <sql id="Base_Column_List">
-	id,
-	staff_id,
-	name,
-	gender,
-	birth_date,
-	position,
-	job_title,
-	level,
-	pwd,
-	is_sys
+	e.id,
+	e.staff_id,
+	e.name,
+	e.gender,
+	e.birth_date,
+	e.position,
+	e.job_title,
+	e.level,
+	e.pwd,
+	e.is_sys
   </sql>
+  
+  <select id="load" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />, r.role_name
+    from employee_t e
+    inner join roles_t r on r.user_id = e.staff_id
+    where e.id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from employee_t e
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
   <select id="findByUsername" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
-    <include refid="Base_Column_List" />
-    from employee_t
-    where staff_id = #{username,jdbcType=VARCHAR}
+    <include refid="Base_Column_List" />, r.role_name
+    from employee_t e
+    inner join roles_t r on r.user_id = e.staff_id
+    where e.staff_id = #{username,jdbcType=VARCHAR}
   </select>
-  <delete id="delete" parameterType="java.lang.String">
+  
+  <delete id="deleteByUsername" parameterType="java.lang.String">
     delete from employee_t
     where staff_id = #{username,jdbcType=VARCHAR}
   </delete>
+  
   <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="com.crfsdi.whm.model.Person">
     insert into employee_t (<include refid="Base_Column_List" />)
     values (#{username,jdbcType=VARCHAR}, #{staffName,jdbcType=VARCHAR}, 
@@ -43,7 +64,17 @@
       #{sys,jdbcType=CHAR} 
     )
   </insert>
-
+  
+  <insert id="saveMore" useGeneratedKeys="true" keyProperty="id" parameterType="list">
+    insert into employee_t (<include refid="Base_Column_List" />)
+    values 
+       <foreach collection="list" item="obj" index="index" separator="," > 
+           (#{obj.username,jdbcType=VARCHAR}, #{obj.staffName,jdbcType=VARCHAR}, #{obj.gender,jdbcType=CHAR}, 
+            #{obj.birthDate,jdbcType=DATE}, #{obj.position,jdbcType=VARCHAR}, #{obj.jobTitle,jdbcType=VARCHAR}, 
+            #{obj.level,jdbcType=INTEGER}, #{obj.password,jdbcType=VARCHAR}, #{obj.sys,jdbcType=CHAR})
+       </foreach> 
+  </insert>
+  
   <update id="update" parameterType="com.crfsdi.whm.model.Person">
     update employee_t
     <set>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crfsdi.whm.repository.ProjectRepository">
+  <resultMap id="BaseResultMap" type="com.crfsdi.whm.model.Project">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="prj_id" jdbcType="INTEGER" property="prjId" />
+    <result column="month" jdbcType="VARCHAR" property="month" />
+    <result column="prj_name" jdbcType="VARCHAR" property="name" />
+    <result column="prj_standard" jdbcType="VARCHAR" property="standard" />
+    <result column="prj_type" jdbcType="VARCHAR" property="type" />
+    <result column="prj_scale" jdbcType="DOUBLE" property="scale" />
+    <result column="create_date" jdbcType="DATE" property="createDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+	id,
+	prj_id,
+	month,
+	prj_name,
+	prj_standard,
+	prj_type,
+	prj_scale,
+	create_date
+  </sql>
+  
+  <select id="load" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from projects_t
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from projects_t
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="com.crfsdi.whm.model.Project">
+    insert into projects_t (<include refid="Base_Column_List" />)
+    values (#{prjId,jdbcType=INTEGER}, #{month,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{standard,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{scale,jdbcType=DOUBLE}, 
+      #{createDate,jdbcType=DATE}
+    )
+  </insert>
+  
+  <insert id="savePre" useGeneratedKeys="true" keyProperty="id" parameterType="com.crfsdi.whm.model.Project">
+    insert into projects_pre_t (<include refid="Base_Column_List" />)
+    values ((CONCAT(DATE_FORMAT(NOW(),'%Y%m'),id MOD 10000), #{month,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{standard,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{scale,jdbcType=DOUBLE}, 
+      #{createDate,jdbcType=DATE}
+    )
+  </insert>
+
+  <insert id="saveMore" useGeneratedKeys="true" keyProperty="id" parameterType="list">
+    insert into projects_t (<include refid="Base_Column_List" />)
+    values 
+       <foreach collection="list" item="obj" index="index" separator="," > 
+	      (#{obj.prjId,jdbcType=INTEGER}, #{obj.month,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+	      #{obj.standard,jdbcType=VARCHAR}, #{obj.type,jdbcType=VARCHAR}, #{obj.scale,jdbcType=DOUBLE}, 
+	      #{obj.createDate,jdbcType=DATE}
+       </foreach> 
+  </insert>
+  
+  <insert id="savePreMore" useGeneratedKeys="true" keyProperty="id" parameterType="list">
+    insert into projects_pre_t (<include refid="Base_Column_List" />)
+    values 
+       <foreach collection="list" item="obj" index="index" separator="," > 
+	      ((CONCAT(DATE_FORMAT(NOW(),'%Y%m'),id MOD 10000), #{obj.month,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+	      #{obj.standard,jdbcType=VARCHAR}, #{obj.type,jdbcType=VARCHAR}, #{obj.scale,jdbcType=DOUBLE}, 
+	      #{obj.createDate,jdbcType=DATE}
+       </foreach> 
+  </insert>
+  
+  <update id="update" parameterType="com.crfsdi.whm.model.Project">
+    update projects_t
+    <set>
+      <if test="prjId != null">
+        prj_id = #{prjId,jdbcType=INTEGER},
+      </if>
+      <if test="month != null">
+        month = #{month,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        prj_name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="standard != null">
+        prj_standard = #{standard,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        prj_type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="scale != null">
+        prj_scale = #{scale,jdbcType=DOUBLE},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+    <update id="updatePre" parameterType="com.crfsdi.whm.model.Project">
+    update projects_pre_t
+    <set>
+      <if test="prjId != null">
+        prj_id = #{prjId,jdbcType=INTEGER},
+      </if>
+      <if test="month != null">
+        month = #{month,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        prj_name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="standard != null">
+        prj_standard = #{standard,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        prj_type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="scale != null">
+        prj_scale = #{scale,jdbcType=DOUBLE},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+</mapper>
