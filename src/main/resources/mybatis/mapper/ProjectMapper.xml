@@ -21,6 +21,14 @@
 	prj_scale,
 	create_date
   </sql>
+  <sql id="Base_Column_List_for_insert">
+	prj_id,
+	month,
+	prj_name,
+	prj_standard,
+	prj_type,
+	prj_scale
+  </sql>
   
   <select id="load" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -35,38 +43,34 @@
   </delete>
   
   <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="com.crfsdi.whm.model.Project">
-    insert into projects_t (<include refid="Base_Column_List" />)
+    insert into projects_t (<include refid="Base_Column_List_for_insert" />)
     values (#{prjId,jdbcType=INTEGER}, #{month,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
-      #{standard,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{scale,jdbcType=DOUBLE}, 
-      #{createDate,jdbcType=DATE}
+      #{standard,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{scale,jdbcType=DOUBLE}
     )
   </insert>
   
   <insert id="savePre" useGeneratedKeys="true" keyProperty="id" parameterType="com.crfsdi.whm.model.Project">
-    insert into projects_pre_t (<include refid="Base_Column_List" />)
-    values ((CONCAT(DATE_FORMAT(NOW(),'%Y%m'),id MOD 10000), #{month,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
-      #{standard,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{scale,jdbcType=DOUBLE}, 
-      #{createDate,jdbcType=DATE}
+    insert into projects_pre_t (month,prj_name,prj_standard,prj_type,prj_scale)
+    values (#{month,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{standard,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{scale,jdbcType=DOUBLE}
     )
   </insert>
 
   <insert id="saveMore" useGeneratedKeys="true" keyProperty="id" parameterType="list">
-    insert into projects_t (<include refid="Base_Column_List" />)
+    insert into projects_t (<include refid="Base_Column_List_for_insert" />)
     values 
        <foreach collection="list" item="obj" index="index" separator="," > 
-	      (#{obj.prjId,jdbcType=INTEGER}, #{obj.month,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
-	      #{obj.standard,jdbcType=VARCHAR}, #{obj.type,jdbcType=VARCHAR}, #{obj.scale,jdbcType=DOUBLE}, 
-	      #{obj.createDate,jdbcType=DATE}
+	      (#{obj.prjId,jdbcType=INTEGER}, #{obj.month,jdbcType=VARCHAR}, #{obj.name,jdbcType=VARCHAR}, 
+	      #{obj.standard,jdbcType=VARCHAR}, #{obj.type,jdbcType=VARCHAR}, #{obj.scale,jdbcType=DOUBLE})
        </foreach> 
   </insert>
   
   <insert id="savePreMore" useGeneratedKeys="true" keyProperty="id" parameterType="list">
-    insert into projects_pre_t (<include refid="Base_Column_List" />)
+    insert into projects_pre_t (month,prj_name,prj_standard,prj_type,prj_scale)
     values 
        <foreach collection="list" item="obj" index="index" separator="," > 
-	      ((CONCAT(DATE_FORMAT(NOW(),'%Y%m'),id MOD 10000), #{obj.month,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
-	      #{obj.standard,jdbcType=VARCHAR}, #{obj.type,jdbcType=VARCHAR}, #{obj.scale,jdbcType=DOUBLE}, 
-	      #{obj.createDate,jdbcType=DATE}
+	       (#{obj.month,jdbcType=VARCHAR}, #{obj.name,jdbcType=VARCHAR}, 
+	      #{obj.standard,jdbcType=VARCHAR}, #{obj.type,jdbcType=VARCHAR}, #{obj.scale,jdbcType=DOUBLE})
        </foreach> 
   </insert>
   

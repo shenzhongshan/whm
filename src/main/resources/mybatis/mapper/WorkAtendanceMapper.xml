@@ -36,14 +36,14 @@
   </select>
   
   <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="com.crfsdi.whm.model.WorkAtendance">
-    insert into work_atendance_t (<include refid="Base_Column_List" />)
+    insert into work_atendance_t (month,staff_id,month_occur_rate,month_fill_rate)
     values (#{month,jdbcType=VARCHAR}, #{staffId,jdbcType=VARCHAR}, 
       #{monthOccurRate,jdbcType=FLOAT}, #{monthOccurRate,jdbcType=FLOAT}
     )
   </insert>
   
   <insert id="saveMore" useGeneratedKeys="true" keyProperty="id" parameterType="list">
-    insert into work_atendance_t (<include refid="Base_Column_List" />)
+    insert into work_atendance_t (month,staff_id,month_occur_rate,month_fill_rate)
     values 
        <foreach collection="list" item="obj" index="index" separator="," > 
           (#{obj.month,jdbcType=VARCHAR}, #{obj.staffId,jdbcType=VARCHAR}, 

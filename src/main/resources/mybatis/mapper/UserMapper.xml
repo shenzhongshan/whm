@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.crfsdi.whm.repository.UserRepository">
-  <resultMap id="roleMap" type="com.crfsdi.whm.model.Role">
-      <result column="role_name" jdbcType="VARCHAR" property="name" />
-  </resultMap>
   <resultMap id="BaseResultMap" type="com.crfsdi.whm.model.Person">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="staff_id" jdbcType="VARCHAR" property="username" />
@@ -15,7 +12,9 @@
     <result column="level" jdbcType="INTEGER" property="level" />
     <result column="pwd" jdbcType="VARCHAR" property="password" />
     <result column="is_sys" jdbcType="CHAR" property="sys" />
-    <collection property="roles" ofType="com.crfsdi.whm.model.Role" resultMap="roleMap"/>
+    <collection property="roles" ofType="com.crfsdi.whm.model.Role">
+        <result column="role_name" jdbcType="VARCHAR" property="name" />
+    </collection>
   </resultMap>
   <sql id="Base_Column_List">
 	e.id,
@@ -57,7 +56,7 @@
   </delete>
   
   <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="com.crfsdi.whm.model.Person">
-    insert into employee_t (<include refid="Base_Column_List" />)
+    insert into employee_t (staff_id,name,gender,birth_date,position,job_title,level,pwd,is_sys)
     values (#{username,jdbcType=VARCHAR}, #{staffName,jdbcType=VARCHAR}, 
       #{gender,jdbcType=CHAR}, #{birthDate,jdbcType=DATE}, #{position,jdbcType=VARCHAR}, 
       #{jobTitle,jdbcType=VARCHAR}, #{level,jdbcType=INTEGER}, #{password,jdbcType=VARCHAR}, 
@@ -66,7 +65,7 @@
   </insert>
   
   <insert id="saveMore" useGeneratedKeys="true" keyProperty="id" parameterType="list">
-    insert into employee_t (<include refid="Base_Column_List" />)
+    insert into employee_t (staff_id,name,gender,birth_date,position,job_title,level,pwd,is_sys)
     values 
        <foreach collection="list" item="obj" index="index" separator="," > 
            (#{obj.username,jdbcType=VARCHAR}, #{obj.staffName,jdbcType=VARCHAR}, #{obj.gender,jdbcType=CHAR}, 

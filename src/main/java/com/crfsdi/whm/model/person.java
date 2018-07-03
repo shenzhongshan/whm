@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 public class Person {
-
+	public static final String DEFAULT_PASSWORD = "888888";
     private Long id;
     private String username;
     private String password;
@@ -17,6 +17,6 @@ public class Person {
     private String position;
     private String jobTitle;
     private Integer level;
-    private String sys;
+    private String sys = "N";
     private List<Role> roles;
 }
