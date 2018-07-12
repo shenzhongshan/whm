@@ -15,6 +15,8 @@ public class WorkTimeSheet {
 	private Date startDate;
 	private Date endDate;
 	private Date createTime;
-	private Double work_comfirm;
+	private Date updateTime;
+	private Double workComfirm;
 	private Double points;
+	private Integer status;
 }

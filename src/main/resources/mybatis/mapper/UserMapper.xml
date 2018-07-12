@@ -11,7 +11,10 @@
     <result column="job_title" jdbcType="VARCHAR" property="jobTitle" />
     <result column="level" jdbcType="INTEGER" property="level" />
     <result column="pwd" jdbcType="VARCHAR" property="password" />
-    <result column="is_sys" jdbcType="CHAR" property="sys" />
+    <result column="is_sys" jdbcType="INTEGER" property="sys" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="create_date" jdbcType="DATE" property="createDate" />
+    <result column="update_date" jdbcType="DATE" property="updateDate" />
     <collection property="roles" ofType="com.crfsdi.whm.model.Role">
         <result column="role_name" jdbcType="VARCHAR" property="name" />
     </collection>
@@ -26,7 +29,10 @@
 	e.job_title,
 	e.level,
 	e.pwd,
-	e.is_sys
+	e.is_sys,
+	e.status,
+	e.create_date,
+	e.update_date
   </sql>
   
   <select id="load" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -56,21 +62,22 @@
   </delete>
   
   <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="com.crfsdi.whm.model.Person">
-    insert into employee_t (staff_id,name,gender,birth_date,position,job_title,level,pwd,is_sys)
+    insert into employee_t (staff_id,name,gender,birth_date,position,job_title,level,pwd,is_sys,status)
     values (#{username,jdbcType=VARCHAR}, #{staffName,jdbcType=VARCHAR}, 
       #{gender,jdbcType=CHAR}, #{birthDate,jdbcType=DATE}, #{position,jdbcType=VARCHAR}, 
       #{jobTitle,jdbcType=VARCHAR}, #{level,jdbcType=INTEGER}, #{password,jdbcType=VARCHAR}, 
-      #{sys,jdbcType=CHAR} 
+      #{sys,jdbcType=INTEGER},#{status,jdbcType=INTEGER}  
     )
   </insert>
   
   <insert id="saveMore" useGeneratedKeys="true" keyProperty="id" parameterType="list">
-    insert into employee_t (staff_id,name,gender,birth_date,position,job_title,level,pwd,is_sys)
+    insert into employee_t (staff_id,name,gender,birth_date,position,job_title,level,pwd,is_sys,status)
     values 
        <foreach collection="list" item="obj" index="index" separator="," > 
            (#{obj.username,jdbcType=VARCHAR}, #{obj.staffName,jdbcType=VARCHAR}, #{obj.gender,jdbcType=CHAR}, 
             #{obj.birthDate,jdbcType=DATE}, #{obj.position,jdbcType=VARCHAR}, #{obj.jobTitle,jdbcType=VARCHAR}, 
-            #{obj.level,jdbcType=INTEGER}, #{obj.password,jdbcType=VARCHAR}, #{obj.sys,jdbcType=CHAR})
+            #{obj.level,jdbcType=INTEGER}, #{obj.password,jdbcType=VARCHAR}, #{obj.sys,jdbcType=INTEGER},
+            #{obj.status,jdbcType=INTEGER})
        </foreach> 
   </insert>
   
@@ -101,6 +108,10 @@
       <if test="sys != null">
         is_sys = #{sys,jdbcType=VARCHAR},
       </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      update_time = CURRENT_TIMESTAMP
     </set>
     where staff_id = #{username,jdbcType=VARCHAR}
   </update>

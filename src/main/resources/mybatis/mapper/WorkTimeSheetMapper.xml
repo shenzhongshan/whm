@@ -10,9 +10,12 @@
     <result column="prj_position" jdbcType="VARCHAR" property="prjPosition" />
     <result column="start_date" jdbcType="DATE" property="startDate" />
     <result column="end_date" jdbcType="DATE" property="endDate" />
-    <result column="create_date" jdbcType="DATE" property="createDate" />
+    <result column="create_time" jdbcType="DATE" property="createTime" />
+    <result column="update_time" jdbcType="DATE" property="updateTime" />
     <result column="work_comfirm" jdbcType="FLOAT" property="workComfirm" />
     <result column="points" jdbcType="FLOAT" property="points" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    
   </resultMap>
   <sql id="Base_Column_List">
 	id,
@@ -24,22 +27,12 @@
 	start_date,
 	end_date,
 	create_time,
+    update_time,
 	work_comfirm,
-	points
+	points,
+	status
   </sql>
-  
-  <sql id="Base_Column_List_pre">
-	id,
-	staff_id,
-	month,
-	prj_id,
-	prj_phase,
-	prj_position,
-	start_date,
-	end_date,
-	create_time
-  </sql>
-  
+    
   <select id="load" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
@@ -56,17 +49,11 @@
     insert into work_time_sheet_t (<include refid="Base_Column_List" />)
     values (#{staffId,jdbcType=VARCHAR}, #{month,jdbcType=VARCHAR}, #{prjId,jdbcType=INTEGER}, 
       #{prjPhase,jdbcType=VARCHAR}, #{prjPosition,jdbcType=VARCHAR}, #{startDate,jdbcType=DATE}, 
-      #{endDate,jdbcType=DATE}, #{createDate,jdbcType=DATE}, #{workComfirm,jdbcType=FLOAT}, #{points,jdbcType=FLOAT}
+      #{endDate,jdbcType=DATE}, #{createTime,jdbcType=DATE}, #{updateTime,jdbcType=DATE},
+      #{workComfirm,jdbcType=FLOAT}, #{points,jdbcType=FLOAT},#{status,jdbcType=INTEGER}
     )
   </insert>
   
-  <insert id="savePre" useGeneratedKeys="true" keyProperty="id" parameterType="com.crfsdi.whm.model.WorkTimeSheet">
-    insert into work_time_sheet_pre_t (<include refid="Base_Column_List_pre" />)
-    values (#{staffId,jdbcType=VARCHAR}, #{month,jdbcType=VARCHAR}, #{prjId,jdbcType=INTEGER}, 
-      #{prjPhase,jdbcType=VARCHAR}, #{prjPosition,jdbcType=VARCHAR}, #{startDate,jdbcType=DATE}, 
-      #{endDate,jdbcType=DATE}, #{createDate,jdbcType=DATE}
-    )
-  </insert>
 
   <insert id="saveMore" useGeneratedKeys="true" keyProperty="id" parameterType="list">
     insert into work_time_sheet_t (<include refid="Base_Column_List" />)
@@ -74,19 +61,11 @@
        <foreach collection="list" item="obj" index="index" separator="," > 
           (#{obj.staffId,jdbcType=VARCHAR}, #{obj.month,jdbcType=VARCHAR}, #{obj.prjId,jdbcType=INTEGER}, 
            #{obj.prjPhase,jdbcType=VARCHAR}, #{obj.prjPosition,jdbcType=VARCHAR}, #{obj.startDate,jdbcType=DATE}, 
-           #{obj.endDate,jdbcType=DATE}, #{obj.createDate,jdbcType=DATE}, #{obj.workComfirm,jdbcType=FLOAT}, #{obj.points,jdbcType=FLOAT}
+           #{obj.endDate,jdbcType=DATE}, #{obj.createTime,jdbcType=DATE}, #{obj.updateTime,jdbcType=DATE},
+           #{obj.workComfirm,jdbcType=FLOAT},#{obj.points,jdbcType=FLOAT},#{obj.status,jdbcType=INTEGER}
        </foreach> 
   </insert>
   
-  <insert id="savePreMore" useGeneratedKeys="true" keyProperty="id" parameterType="list">
-    insert into work_time_sheet_pre_t (<include refid="Base_Column_List_pre" />)
-    values 
-       <foreach collection="list" item="obj" index="index" separator="," > 
-          (#{obj.staffId,jdbcType=VARCHAR}, #{obj.month,jdbcType=VARCHAR}, #{obj.prjId,jdbcType=INTEGER}, 
-           #{obj.prjPhase,jdbcType=VARCHAR}, #{obj.prjPosition,jdbcType=VARCHAR}, #{obj.startDate,jdbcType=DATE}, 
-           #{obj.endDate,jdbcType=DATE}, #{obj.createDate,jdbcType=DATE}
-       </foreach> 
-  </insert>
   
   <update id="update" parameterType="com.crfsdi.whm.model.WorkTimeSheet">
     update work_time_sheet_t
@@ -118,36 +97,12 @@
       <if test="points != null">
         points = #{points,jdbcType=FLOAT},
       </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+        update_time = CURRENT_TIMESTAMP
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
   
-    <update id="updatePre" parameterType="com.crfsdi.whm.model.WorkTimeSheet">
-    update work_time_sheet_pre_t
-    <set>
-      <if test="staffId != null">
-        staff_id = #{staffId,jdbcType=VARCHAR},
-      </if>
-      <if test="month != null">
-        month = #{month,jdbcType=VARCHAR},
-      </if>
-      <if test="prjId != null">
-        prj_id = #{prjId,jdbcType=INTEGER},
-      </if>
-      <if test="prjPhase != null">
-        prj_phase = #{prjPhase,jdbcType=VARCHAR},
-      </if>
-      <if test="prjPosition != null">
-        prj_position = #{prjPosition,jdbcType=VARCHAR},
-      </if>
-      <if test="startDate != null">
-        start_date = #{startDate,jdbcType=DATE},
-      </if>
-      <if test="startDate != null">
-        end_date = #{startDate,jdbcType=DATE},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-
 </mapper>

@@ -26,7 +26,7 @@ public class UserController {
     @PostMapping("/signup")
     public void signUp(@RequestBody Person user) {
         log.info("这里注册的都算系统内置用户");
-    	user.setSys("Y");
+    	user.setSys(1);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }

@@ -13,5 +13,7 @@ public class Project {
     private String standard;
     private String type;
     private Double scale;
+    private Integer status;
     private Date createDate;
+    private Date UpdateDate;
 }

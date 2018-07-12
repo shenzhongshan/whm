@@ -7,13 +7,17 @@
     <result column="staff_id" jdbcType="VARCHAR" property="staffId" />
     <result column="month_occur_rate" jdbcType="FLOAT" property="monthOccurRate" />
     <result column="month_fill_rate" jdbcType="FLOAT" property="monthFillRate" />
+    <result column="create_date" jdbcType="DATE" property="createDate" />
+    <result column="update_date" jdbcType="DATE" property="updateDate" />
   </resultMap>
   <sql id="Base_Column_List">
 	id,
 	month,
 	staff_id,
 	month_occur_rate,
-	month_fill_rate
+	month_fill_rate,
+	create_date,
+	update_date
   </sql>
   
   <select id="load" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -66,6 +70,7 @@
       <if test="monthOccurRate != null">
         month_occur_rate = #{monthOccurRate,jdbcType=FLOAT},
       </if>
+      update_date = CURRENT_TIMESTAMP
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
