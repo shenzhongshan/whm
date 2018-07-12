@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50534
 File Encoding         : 65001
 
-Date: 2018-07-03 16:59:14
+Date: 2018-07-12 10:38:52
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -29,25 +29,13 @@ CREATE TABLE `employee_t` (
   `job_title` varchar(5) DEFAULT NULL COMMENT '职称,,JT001-教授级高级工程师,JT002-高级工程师,JT003-工程师,JT004-助理工程师,JT005-见习生',
   `level` int(3) unsigned zerofill DEFAULT NULL COMMENT '岗位级别',
   `pwd` varchar(255) DEFAULT NULL COMMENT '登录密码',
-  `is_sys` char(1) NOT NULL DEFAULT 'N' COMMENT '是否系统内置用户,Y-是，N-员工',
+  `status` tinyint(4) DEFAULT '1' COMMENT '0-无效,1-有效',
+  `is_sys` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否系统内置用户,1-是，0-员工',
+  `create_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_date` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uidx_employee_staff_id` (`staff_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Table structure for projects_pre_t
--- ----------------------------
-DROP TABLE IF EXISTS `projects_pre_t`;
-CREATE TABLE `projects_pre_t` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
-  `month` int(10) NOT NULL COMMENT '年月,格式:YYYYMM',
-  `prj_name` varchar(255) NOT NULL COMMENT '项目名称',
-  `prj_standard` varchar(50) DEFAULT NULL COMMENT '项目标准',
-  `prj_type` varchar(50) DEFAULT NULL COMMENT '项目类型',
-  `prj_scale` decimal(12,0) DEFAULT NULL COMMENT '项目规模',
-  `create_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for projects_t
@@ -61,7 +49,9 @@ CREATE TABLE `projects_t` (
   `prj_standard` varchar(50) DEFAULT NULL COMMENT '项目标准',
   `prj_type` varchar(50) DEFAULT NULL COMMENT '项目类型',
   `prj_scale` decimal(12,0) DEFAULT NULL COMMENT '项目规模',
-  `create_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `status` tinyint(4) DEFAULT '0' COMMENT '0-导入,1-可用',
+  `create_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_date` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -73,6 +63,8 @@ CREATE TABLE `roles_t` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` varchar(10) NOT NULL COMMENT '用户标识,工号或者系统用户名',
   `role_name` varchar(20) NOT NULL COMMENT '角色名,以ROLE_为前缀的名称,大写',
+  `create_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_date` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
@@ -86,25 +78,10 @@ CREATE TABLE `work_atendance_t` (
   `staff_id` varchar(10) NOT NULL COMMENT '工号',
   `month_occur_rate` float(6,2) DEFAULT NULL COMMENT '工时识别率',
   `month_fill_rate` float(6,2) DEFAULT NULL COMMENT '工时填报率',
+  `create_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_date` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Table structure for work_time_sheet_pre_t
--- ----------------------------
-DROP TABLE IF EXISTS `work_time_sheet_pre_t`;
-CREATE TABLE `work_time_sheet_pre_t` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
-  `staff_id` varchar(10) NOT NULL COMMENT '工号',
-  `month` varchar(6) NOT NULL COMMENT '月份,YYYYMM',
-  `prj_id` int(10) NOT NULL COMMENT '项目编号',
-  `prj_phase` varchar(50) DEFAULT NULL COMMENT '项目阶段',
-  `prj_position` varchar(50) DEFAULT NULL COMMENT '项目中本人任职',
-  `start_date` date NOT NULL COMMENT '本月工作起始日期',
-  `end_date` date NOT NULL COMMENT '本月工作结束日期',
-  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录更新时间',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for work_time_sheet_t
@@ -120,7 +97,9 @@ CREATE TABLE `work_time_sheet_t` (
   `start_date` date NOT NULL COMMENT '本月工作起始日期',
   `end_date` date NOT NULL COMMENT '本月工作结束日期',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录更新时间',
+  `update_time` timestamp NULL DEFAULT NULL COMMENT '记录更新时间',
   `work_comfirm` float(5,2) DEFAULT '100.00' COMMENT '工效认定',
   `points` float(7,2) DEFAULT NULL,
+  `status` tinyint(4) DEFAULT '0' COMMENT '0-未提交,1-已提交,2-已审批确认',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
