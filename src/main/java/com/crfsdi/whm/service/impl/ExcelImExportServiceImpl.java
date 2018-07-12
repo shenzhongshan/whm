@@ -231,7 +231,7 @@ public class ExcelImExportServiceImpl implements ExcelImExportService {
 			   log.info("Import row end: {}.", prj);
 		       return prj;
 			});
-			this.projectRepo.savePreMore(rows);
+			this.projectRepo.saveMore(rows);
 
 	}
 
