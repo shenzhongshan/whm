@@ -11,33 +11,34 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.crfsdi.whm.model.Project;
+import com.crfsdi.whm.model.WorkAtendance;
 import com.crfsdi.whm.service.ExcelImExportService;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-@RequestMapping("/wts")
+@RequestMapping("/wa")
 public class WorkAtendanceController {
     @Autowired
 	private ExcelImExportService excelImExportService;
 	
     @PostMapping("/list")
-    public void list(@RequestBody Project prj) {
+    public void list(@RequestBody WorkAtendance prj) {
 
     }
     @PostMapping("/update")
-    public void updatPproject(@RequestBody Project prj) {
+    public void update(@RequestBody WorkAtendance prj) {
 
     }
     
     @PostMapping("/del")
-    public void deletPproject() {
+    public void delete() {
 
     }
     
     @PostMapping("/comfirm")
-    public void deletPproject(@RequestBody List<Project> prjs) {
+    public void comfirm(@RequestBody List<WorkAtendance> prjs) {
 
     }
     
