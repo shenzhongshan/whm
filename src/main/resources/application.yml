@@ -11,8 +11,8 @@ spring:
         name: whm
     datasource:
         url: jdbc:mysql://121.201.110.196:3306/whmdb
-        password: whmdb
-        username: Whmdb123
+        password: Whmdb123
+        username: whmdb
         driverClassName: com.mysql.jdbc.Driver
         jmx-enabled: true
         tomcat:
