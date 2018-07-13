@@ -43,16 +43,30 @@ public class ExcelImportController {
     }
     
     @PostMapping("/staff")
-    public void staff() {
-        log.info("importing staff... ");
+    public void staff(@RequestParam("file") MultipartFile file) {
+        log.info("importing staff... OriginalFilename:{}, ContentType:{} ", file.getOriginalFilename(), file.getContentType());
         File infile = null;
-		excelImExportService.importStaff(infile);
+        try {
+            infile = createFile("staff-", file.getOriginalFilename());
+			file.transferTo(infile);
+			excelImExportService.importStaff(infile);
+		} catch (IllegalStateException | IOException e) {
+			log.warn("Import staff error!", e);
+		}
+
     }
     
     @PostMapping("/wa")
-    public void workAtendance(@RequestParam String month) {
-        log.info("importing work atenddance... month:{}", month);
+    public void workAtendance(@RequestParam String month, @RequestParam("file") MultipartFile file) {
+        log.info("importing work atenddance... month:{}, OriginalFilename:{}, ContentType:{} ", month,file.getOriginalFilename(), file.getContentType());
         File infile = null;
-		excelImExportService.importWorkAtendanceByMonth(infile, month);
+        try {
+            infile = createFile("workAtenddance-" + month, file.getOriginalFilename());
+			file.transferTo(infile);
+			excelImExportService.importWorkAtendanceByMonth(infile, month);
+		} catch (IllegalStateException | IOException e) {
+			log.warn("Import work atenddance error!", e);
+		}
+
     }
 }
