@@ -19,7 +19,6 @@ import com.crfsdi.whm.filter.JwtAuthenticationFilter;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled=true)
-@Order(SecurityProperties.BASIC_AUTH_ORDER)
 public class WhmWebSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -38,9 +37,9 @@ public class WhmWebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/users/signup","/users/resetAdminPwd").permitAll()
+                .antMatchers(HttpMethod.POST, "/users/signup","/users/resetAdminPwd","/users/resetAdmin").permitAll()
                 .anyRequest().authenticated()
-                .and().httpBasic().and()
+                .and()
                 .addFilter(new JWTLoginFilter(authenticationManager()))
                 .addFilter(new JwtAuthenticationFilter(authenticationManager()));
     }

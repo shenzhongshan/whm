@@ -37,12 +37,30 @@ public class UserController {
         userRepository.update(user);
     }
     
-    @PostMapping("/resetAdminPwd")
-    public void resetPwd() {
+    @RequestMapping("/resetAdminPwd")
+    public void resetAdminPwd() {
     	Person user = new Person();
     	user.setUsername("admin");
         user.setPassword(bCryptPasswordEncoder.encode("888888"));
         userRepository.update(user);
+    }
+    
+    @RequestMapping("/resetAdmin")
+    public void resetAdmin() {
+        Person admin = userRepository.findByUsername("admin");
+        if(admin != null) {
+        	Person user = new Person();
+        	user.setUsername("admin");
+            user.setPassword(bCryptPasswordEncoder.encode("888888"));
+            userRepository.update(user);
+        }else {
+        	Person user = new Person();
+        	user.setUsername("admin");
+        	user.setStaffName("admin");
+        	user.setSys(1);
+            user.setPassword(bCryptPasswordEncoder.encode("888888"));
+            userRepository.save(user);
+        }
     }
     
     @PostMapping("/changePwd")
