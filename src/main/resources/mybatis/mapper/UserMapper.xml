@@ -39,7 +39,7 @@
     select 
     <include refid="Base_Column_List" />, r.role_name
     from employee_t e
-    inner join roles_t r on r.user_id = e.staff_id
+    left join roles_t r on r.user_id = e.staff_id
     where e.id = #{id,jdbcType=INTEGER}
   </select>
   
@@ -52,7 +52,7 @@
     select 
     <include refid="Base_Column_List" />, r.role_name
     from employee_t e
-    inner join roles_t r on r.user_id = e.staff_id
+    left join roles_t r on r.user_id = e.staff_id
     where e.staff_id = #{username,jdbcType=VARCHAR}
   </select>
   
@@ -111,7 +111,7 @@
       <if test="status != null">
         status = #{status,jdbcType=VARCHAR},
       </if>
-      update_time = CURRENT_TIMESTAMP
+      update_date = CURRENT_TIMESTAMP
     </set>
     where staff_id = #{username,jdbcType=VARCHAR}
   </update>
