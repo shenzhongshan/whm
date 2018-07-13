@@ -61,7 +61,7 @@
        <foreach collection="list" item="obj" index="index" separator="," > 
 	      (#{obj.prjId,jdbcType=INTEGER}, #{obj.month,jdbcType=VARCHAR}, #{obj.name,jdbcType=VARCHAR}, 
 	      #{obj.standard,jdbcType=VARCHAR}, #{obj.type,jdbcType=VARCHAR}, #{obj.scale,jdbcType=DOUBLE},
-	      #{status,jdbcType=INTEGER})
+	      #{obj.status,jdbcType=INTEGER})
        </foreach> 
   </insert>
   

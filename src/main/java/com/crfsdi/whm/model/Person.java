@@ -17,8 +17,8 @@ public class Person {
     private String position;
     private String jobTitle;
     private Integer level;
-    private Integer sys;
-    private Integer status;
+    private Integer sys = 0;
+    private Integer status = 1;
     private Date createDate;
     private Date UpdateDate;
     private List<Role> roles;

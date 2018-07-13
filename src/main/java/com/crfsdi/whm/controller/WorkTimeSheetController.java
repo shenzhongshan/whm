@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.crfsdi.whm.model.Project;
+import com.crfsdi.whm.model.WorkTimeSheet;
 import com.crfsdi.whm.service.ExcelImExportService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -24,17 +25,17 @@ public class WorkTimeSheetController {
 	
 
     @PostMapping("/update")
-    public void updatPproject(@RequestBody Project prj) {
+    public void update(@RequestBody WorkTimeSheet prj) {
 
     }
     
     @PostMapping("/del")
-    public void deletPproject() {
+    public void delete() {
 
     }
     
     @PostMapping("/comfirm")
-    public void deletPproject(@RequestBody List<Project> prjs) {
+    public void comfirm(@RequestBody List<WorkTimeSheet> prjs) {
 
     }
     

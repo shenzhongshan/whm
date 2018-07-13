@@ -24,17 +24,17 @@ public class ProjectsController {
 	
 
     @PostMapping("/update")
-    public void updatPproject(@RequestBody Project prj) {
+    public void update(@RequestBody Project prj) {
 
     }
     
     @PostMapping("/del")
-    public void deletPproject() {
+    public void delete() {
 
     }
     
     @PostMapping("/comfirm")
-    public void deletPproject(@RequestBody List<Project> prjs) {
+    public void comfirm(@RequestBody List<Project> prjs) {
 
     }
     
