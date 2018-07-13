@@ -33,14 +33,6 @@ public class ExcelImportController {
 			excelImExportService.importProjects(infile , month);
 		} catch (IllegalStateException | IOException e) {
 			log.warn("Import project error!", e);
-		}finally {
-			if(infile.exists()) {
-				try {
-					infile.delete();
-				}catch(Exception e) {
-					//
-				}
-			}
 		}
     }
     

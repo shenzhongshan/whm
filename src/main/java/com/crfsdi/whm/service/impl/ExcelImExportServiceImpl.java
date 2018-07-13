@@ -248,6 +248,8 @@ public class ExcelImExportServiceImpl implements ExcelImExportService {
 			sheet = wb.getSheetAt(0);
 		} catch (EncryptedDocumentException | InvalidFormatException | IOException e) {
              log.error("Get import sheet, file:{}, error:{}.", infile, e);
+		}finally {
+			infile.deleteOnExit();
 		}
 		return sheet;
 	}
