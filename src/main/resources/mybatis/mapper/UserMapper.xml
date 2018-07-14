@@ -44,7 +44,7 @@
   </select>
   
   <delete id="delete" parameterType="java.lang.Long">
-    delete from employee_t e
+    delete from employee_t
     where id = #{id,jdbcType=INTEGER}
   </delete>
   
@@ -54,6 +54,16 @@
     from employee_t e
     left join roles_t r on r.user_id = e.staff_id
     where e.staff_id = #{username,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="listByPage" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />, r.role_name
+    from employee_t e
+    left join roles_t r on r.user_id = e.staff_id
+    where e.staff_id like CONCAT('%',#{username,jdbcType=VARCHAR},'%')
+    and e.name like CONCAT('%',#{staffName,jdbcType=VARCHAR},'%')
+    LIMIT #{page,jdbcType=INTEGER},#{size,jdbcType=INTEGER}
   </select>
   
   <delete id="deleteByUsername" parameterType="java.lang.String">
