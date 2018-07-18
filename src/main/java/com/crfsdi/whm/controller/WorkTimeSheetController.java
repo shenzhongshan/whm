@@ -48,15 +48,33 @@ public class WorkTimeSheetController {
     	wtsRepo.update(wts);
     }
     
+    @PostMapping("/save")
+    public WorkTimeSheet save(@RequestBody WorkTimeSheet wts) {
+    	log.info("save Work Timesheet: {}", wts);
+    	if(wts.getId()!= null) {
+        	wtsRepo.update(wts);
+    	}else {
+        	wtsRepo.save(wts);
+    	}
+    	return wts;
+    }
+    
     @RequestMapping("/del/{id}")
     public void delete(@PathVariable("id") Long id) {
     	log.info("delete Work Timesheet, id: {}", id);
     	wtsRepo.delete(id);
     }
     
-    @PostMapping("/comfirm")
-    public void comfirm(@RequestBody List<WorkTimeSheet> prjs) {
-
+    @RequestMapping("/comfirm/{month,staffId}")
+    public void comfirm(@PathVariable("month") Long month,@PathVariable("staffId") String  staffId) {
+    	log.info("comfirm Work Timesheet, month: {}, staff id:{}", month, staffId);
+    	wtsRepo.confirm(month, staffId);
+    }
+    
+    @RequestMapping("/submit/{month,staffId}")
+    public void submit(@PathVariable("month") Long month,@PathVariable("staffId") String  staffId) {
+    	log.info("submit Work Timesheet, month: {}, staff id:{}", month, staffId);
+    	wtsRepo.submit(month,staffId);
     }
     
 }

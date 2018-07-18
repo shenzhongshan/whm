@@ -53,9 +53,4 @@ public class WorkAtendanceController {
     	waRepo.delete(id);
     }
     
-    @PostMapping("/comfirm")
-    public void comfirm(@RequestBody List<WorkAtendance> was) {
-
-    }
-    
 }

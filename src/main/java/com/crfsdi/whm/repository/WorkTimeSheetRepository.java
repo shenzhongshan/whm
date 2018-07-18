@@ -8,4 +8,8 @@ import com.crfsdi.whm.model.WorkTimeSheet;
 @Mapper
 public interface WorkTimeSheetRepository extends BaseRepository<WorkTimeSheet>{
 	List<WorkTimeSheet> listByPage(String staffId, Long month, Long page, Long size);
+
+	void confirm(Long month, String staffId);
+
+	void submit(Long month, String staffId);
 }

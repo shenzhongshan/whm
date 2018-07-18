@@ -116,4 +116,24 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
   
+ <update id="submit">
+    update work_time_sheet_t
+    <set>
+      status = 1,
+      update_date = CURRENT_TIMESTAMP
+    </set>
+    where month = #{month,jdbcType=INTEGER}
+      and staff_id = #{staffId,jdbcType=VARCHAR}
+  </update>
+  
+ <update id="confirm">
+    update work_time_sheet_t
+    <set>
+      status = 2,
+      update_date = CURRENT_TIMESTAMP
+    </set>
+    where month = #{month,jdbcType=INTEGER}
+      and staff_id = #{staffId,jdbcType=VARCHAR}
+  </update>
+  
 </mapper>
