@@ -24,7 +24,7 @@ public class ExcelImportController {
 
 
     @PostMapping("/prj")
-    public void project(@RequestParam String month, @RequestParam("file") MultipartFile file) {
+    public void project(@RequestParam Long month, @RequestParam("file") MultipartFile file) {
         log.info("importing porject... month:{}, OriginalFilename:{}, ContentType:{} ", month,file.getOriginalFilename(), file.getContentType());
         File infile = null;
         try {
@@ -57,7 +57,7 @@ public class ExcelImportController {
     }
     
     @PostMapping("/wa")
-    public void workAtendance(@RequestParam String month, @RequestParam("file") MultipartFile file) {
+    public void workAtendance(@RequestParam Long month, @RequestParam("file") MultipartFile file) {
         log.info("importing work atenddance... month:{}, OriginalFilename:{}, ContentType:{} ", month,file.getOriginalFilename(), file.getContentType());
         File infile = null;
         try {

@@ -21,7 +21,7 @@ public class ExcelImExportServiceTest {
 	@Test
 	public void testImportWorkAtendanceByMonth() {
 		File infile = new File("D:\\wh_sy\\exceltest\\wa.xlsx");
-		excelImExportService.importWorkAtendanceByMonth(infile, "201807");
+		excelImExportService.importWorkAtendanceByMonth(infile, 201807L);
 	}
 
 	@Test
@@ -33,7 +33,7 @@ public class ExcelImExportServiceTest {
 	@Test
 	public void testImportProjects() {
 		File infile = new File("D:\\wh_sy\\exceltest\\projects.xlsx");
-		excelImExportService.importProjects(infile, "201807");
+		excelImExportService.importProjects(infile, 201807L);
 	}
 
 	@Test
