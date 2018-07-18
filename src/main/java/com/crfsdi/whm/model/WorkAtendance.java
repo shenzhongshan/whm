@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class WorkAtendance {
 	private Long id;
-	private String month;
+	private Long month;
 	private String staffId;
 	private Double monthOccurRate;
 	private Double monthFillRate;

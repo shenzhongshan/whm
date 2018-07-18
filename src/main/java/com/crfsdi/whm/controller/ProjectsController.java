@@ -50,12 +50,14 @@ public class ProjectsController {
     @RequestMapping("/list/{month}")
     public List<Project> list(@PathVariable("month") Long month) {
     	log.info("list project by month, month: {}", month);
-    	return null;
+    	List<Project> prjs = repo.listByMonth(month);
+    	return prjs;
     }
     
-    @PostMapping("/comfirm/{month}")
-    public void comfirm(@PathVariable("month") Long month) {
-
+    @PostMapping("/confirm/{month}")
+    public void confirm(@PathVariable("month") Long month) {
+    	log.info("comfirm project by month, month: {}", month);
+    	repo.confirmByMonth(month);
     }
     
 }

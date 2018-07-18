@@ -52,7 +52,7 @@ public class ExcelImExportServiceImpl implements ExcelImExportService {
    }
 	   
 	@Override
-	public void importWorkAtendanceByMonth(File infile, String month) {
+	public void importWorkAtendanceByMonth(File infile, Long month) {
 		List<WorkAtendance> rows = parseRows(infile, (Row r)->{
 		   log.info("Importing Work Atendance row: {}.", r.getRowNum());
 		   WorkAtendance cells = new WorkAtendance();
@@ -187,7 +187,7 @@ public class ExcelImExportServiceImpl implements ExcelImExportService {
 
 
 	@Override
-	public void importProjects(File infile, String month) {
+	public void importProjects(File infile, Long month) {
 		List<Project> rows = parseRows(infile, (Row r)->{
 			   log.info("Importing Project row: {}.", r.getRowNum());
 			   Project prj = new Project();
@@ -236,7 +236,7 @@ public class ExcelImExportServiceImpl implements ExcelImExportService {
 	}
 
 	@Override
-	public void exportReportByYear(File outfile, int year) {
+	public void exportReportByYear(File outfile, Integer year) {
 		// TODO Auto-generated method stub
 
 	}

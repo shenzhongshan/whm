@@ -4,7 +4,7 @@
   <resultMap id="BaseResultMap" type="com.crfsdi.whm.model.Project">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="prj_id" jdbcType="INTEGER" property="prjId" />
-    <result column="month" jdbcType="VARCHAR" property="month" />
+    <result column="month" jdbcType="INTEGER" property="month" />
     <result column="prj_name" jdbcType="VARCHAR" property="name" />
     <result column="prj_standard" jdbcType="VARCHAR" property="standard" />
     <result column="prj_type" jdbcType="VARCHAR" property="type" />
@@ -40,6 +40,13 @@
     <include refid="Base_Column_List" />
     from projects_t
     where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <select id="listByMonth" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from projects_t
+    where month = #{month,jdbcType=INTEGER}
   </select>
   
   <delete id="delete" parameterType="java.lang.Long">
@@ -94,6 +101,13 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
   
-
+  <update id="confirmByMonth" parameterType="java.lang.Long">
+    update projects_t
+    <set>
+      status = 1,
+      update_date = CURRENT_TIMESTAMP
+    </set>
+    where month = #{month,jdbcType=INTEGER}
+  </update>
 
 </mapper>

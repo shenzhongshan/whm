@@ -8,7 +8,7 @@ import lombok.Data;
 public class WorkTimeSheet {
 	private Long id;
 	private String staffId;
-	private String month;
+	private Long month;
 	private Long prjId;
 	private String prjPhase;
 	private String prjPosition;

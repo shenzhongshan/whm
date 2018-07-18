@@ -3,7 +3,7 @@
 <mapper namespace="com.crfsdi.whm.repository.WorkAtendanceRepository">
   <resultMap id="BaseResultMap" type="com.crfsdi.whm.model.WorkAtendance">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="month" jdbcType="VARCHAR" property="month" />
+    <result column="month" jdbcType="INTEGER" property="month" />
     <result column="staff_id" jdbcType="VARCHAR" property="staffId" />
     <result column="month_occur_rate" jdbcType="FLOAT" property="monthOccurRate" />
     <result column="month_fill_rate" jdbcType="FLOAT" property="monthFillRate" />
@@ -32,11 +32,15 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   
-  <select id="findByStaffId" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="listByPage" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from work_atendance_t
-    where staff_id = #{staffId,jdbcType=VARCHAR}
+    where staff_id like CONCAT('%',#{staffId,jdbcType=VARCHAR},'%')
+    <if test="month != null">
+        and month = #{month,jdbcType=INTEGER}
+    </if>
+    LIMIT #{page,jdbcType=INTEGER},#{size,jdbcType=INTEGER}
   </select>
   
   <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="com.crfsdi.whm.model.WorkAtendance">

@@ -8,7 +8,7 @@ import lombok.Data;
 public class Project {
     private Long id;
     private Long prjId = 0L;
-    private String month;
+    private Long month;
     private String name;
     private String standard;
     private String type;
