@@ -15,7 +15,6 @@
     <result column="work_comfirm" jdbcType="FLOAT" property="workComfirm" />
     <result column="points" jdbcType="FLOAT" property="points" />
     <result column="status" jdbcType="INTEGER" property="status" />
-    
   </resultMap>
   <sql id="Base_Column_List">
 	id,
@@ -135,5 +134,39 @@
     where month = #{month,jdbcType=INTEGER}
       and staff_id = #{staffId,jdbcType=VARCHAR}
   </update>
+  
+  <resultMap id="staffMonthStatisticsResultMap" type="com.crfsdi.whm.model.StaffMonthStatistics">
+    <result column="month" jdbcType="INTEGER" property="month" />
+    <result column="monthOccurRate" jdbcType="FLOAT" property="monthOccurRate" />
+    <result column="monthFillRate" jdbcType="FLOAT" property="monthFillRate" />
+    <result column="ranking" jdbcType="INTEGER" property="ranking" />
+    <result column="sumOfPoints" jdbcType="FLOAT" property="sumOfPoints" />
+    <association property="staff" column="staffId" select="com.crfsdi.whm.repository.UserRepository.findByUsername"/>
+    <collection property="worksheets" column="{staffId=staff_id, month=month}" select="listByMonthNStaffId"/>
+  </resultMap>
+  
+  <select id="listStaffMonthStatistics" resultMap="staffMonthStatisticsResultMap">
+    select 
+      e.month, e.staff_id staffId, a.month_occur_rate monthOccurRate, a.month_fill_rate monthFillRate, r.ranking ranking, r.sumOfPoints sumOfPoints
+    from work_time_sheet_t w, employee_t e 
+    left join work_atendance_t a on a.staff_id = w.staff_id and a.month = w.month
+    left join (select s.staff_id, (@rowNum:=@rowNum+1) ranking, sum(s.points) sumOfPoints from work_time_sheet_t s, (select (@rowNum :=0) ) b where s.month = #{month,jdbcType=INTEGER} group by s.staff_id order by sumOfPoints) r
+            on r.staff_id = w.staff_id
+    where w.staff_id = e.staff_id
+      and e.status = 1
+      and e.is_sys = 0
+      and w.month = #{month,jdbcType=INTEGER}
+      <if test="staffId != null">
+        w.staff_id = #{staffId,jdbcType=VARCHAR},
+      </if>
+  </select>
+  
+  <select id="listByMonthNStaffId" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from work_time_sheet_t
+    where staff_id =#{staffId,jdbcType=VARCHAR}
+      and month = #{month,jdbcType=INTEGER}
+  </select>
   
 </mapper>

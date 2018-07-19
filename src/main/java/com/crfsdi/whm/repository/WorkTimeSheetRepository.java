@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.crfsdi.whm.model.StaffMonthStatistics;
 import com.crfsdi.whm.model.WorkTimeSheet;
 @Mapper
 public interface WorkTimeSheetRepository extends BaseRepository<WorkTimeSheet>{
@@ -12,4 +13,6 @@ public interface WorkTimeSheetRepository extends BaseRepository<WorkTimeSheet>{
 	void confirm(Long month, String staffId);
 
 	void submit(Long month, String staffId);
+	
+	List<StaffMonthStatistics> listStaffMonthStatistics(Long month, String staffId);
 }

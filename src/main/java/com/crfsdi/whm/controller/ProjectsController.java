@@ -28,6 +28,17 @@ public class ProjectsController {
     	return repo.load(id);
     }
     
+    @PostMapping("/save")
+    public Project save(@RequestBody Project prj) {
+    	log.info("save project: {}",prj);
+    	if(prj.getId() != null) {
+        	repo.update(prj);
+    	}else {
+        	repo.save(prj);
+    	}
+    	return prj;
+    }
+    
     @PostMapping("/add")
     public Project add(@RequestBody Project prj) {
     	log.info("add project: {}",prj);

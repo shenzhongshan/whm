@@ -31,6 +31,17 @@ public class UserController {
     	return userRepo.load(id);
     }
     
+    @PostMapping("/save")
+    public Person save(@RequestBody Person user) {
+    	log.info("save user: {}", user);
+    	if(user.getId() != null) {
+        	userRepo.update(user);
+    	}else {
+        	userRepo.save(user);
+    	}
+    	return user;
+    }
+    
     @PostMapping("/add")
     public Person add(@RequestBody Person user) {
     	log.info("add user: {}", user);

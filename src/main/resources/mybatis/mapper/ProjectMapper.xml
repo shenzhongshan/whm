@@ -56,7 +56,7 @@
   
   <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="com.crfsdi.whm.model.Project">
     insert into projects_t (<include refid="Base_Column_List_for_insert" />)
-    values (#{prjId,jdbcType=INTEGER}, #{month,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+    values (0, #{month,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
       #{standard,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{scale,jdbcType=DOUBLE},
       #{status,jdbcType=INTEGER}
     )
@@ -66,7 +66,7 @@
     insert into projects_t (<include refid="Base_Column_List_for_insert" />)
     values 
        <foreach collection="list" item="obj" index="index" separator="," > 
-	      (#{obj.prjId,jdbcType=INTEGER}, #{obj.month,jdbcType=VARCHAR}, #{obj.name,jdbcType=VARCHAR}, 
+	      (0, #{obj.month,jdbcType=VARCHAR}, #{obj.name,jdbcType=VARCHAR}, 
 	      #{obj.standard,jdbcType=VARCHAR}, #{obj.type,jdbcType=VARCHAR}, #{obj.scale,jdbcType=DOUBLE},
 	      #{obj.status,jdbcType=INTEGER})
        </foreach> 
@@ -75,9 +75,6 @@
   <update id="update" parameterType="com.crfsdi.whm.model.Project">
     update projects_t
     <set>
-      <if test="prjId != null">
-        prj_id = #{prjId,jdbcType=INTEGER},
-      </if>
       <if test="month != null">
         month = #{month,jdbcType=VARCHAR},
       </if>
@@ -105,6 +102,7 @@
     update projects_t
     <set>
       status = 1,
+      prj_id = month * 10000 + id mod 10000,
       update_date = CURRENT_TIMESTAMP
     </set>
     where month = #{month,jdbcType=INTEGER}
