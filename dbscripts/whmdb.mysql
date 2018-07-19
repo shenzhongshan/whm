@@ -80,7 +80,8 @@ CREATE TABLE `work_atendance_t` (
   `month_fill_rate` float(6,2) DEFAULT NULL COMMENT '工时填报率',
   `create_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `update_date` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY uk_work_atendance_month_staffid (month, staff_id)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
