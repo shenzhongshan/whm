@@ -142,31 +142,51 @@
     <result column="ranking" jdbcType="INTEGER" property="ranking" />
     <result column="sumOfPoints" jdbcType="FLOAT" property="sumOfPoints" />
     <association property="staff" column="staffId" select="com.crfsdi.whm.repository.UserRepository.findByUsername"/>
-    <collection property="worksheets" column="{staffId=staff_id, month=month}" select="listByMonthNStaffId"/>
+    <collection property="worksheets" column="{staffId=staffId, month=month}" select="listByMonthNStaffId"/>
   </resultMap>
   
   <select id="listStaffMonthStatistics" resultMap="staffMonthStatisticsResultMap">
-    select 
-      e.month, e.staff_id staffId, a.month_occur_rate monthOccurRate, a.month_fill_rate monthFillRate, r.ranking ranking, r.sumOfPoints sumOfPoints
-    from work_time_sheet_t w, employee_t e 
-    left join work_atendance_t a on a.staff_id = w.staff_id and a.month = w.month
-    left join (select s.staff_id, (@rowNum:=@rowNum+1) ranking, sum(s.points) sumOfPoints from work_time_sheet_t s, (select (@rowNum :=0) ) b where s.month = #{month,jdbcType=INTEGER} group by s.staff_id order by sumOfPoints) r
-            on r.staff_id = w.staff_id
-    where w.staff_id = e.staff_id
-      and e.status = 1
-      and e.is_sys = 0
-      and w.month = #{month,jdbcType=INTEGER}
-      <if test="staffId != null">
-        w.staff_id = #{staffId,jdbcType=VARCHAR},
-      </if>
+	SELECT
+		w. MONTH,
+		e.staff_id staffId,
+		a.month_occur_rate monthOccurRate,
+		a.month_fill_rate monthFillRate,
+		r.ranking ranking,
+		r.sumOfPoints sumOfPoints
+	FROM
+		work_time_sheet_t w
+	JOIN employee_t e ON w.staff_id = e.staff_id
+	AND e. STATUS = 1
+	AND e.is_sys = 0
+	LEFT JOIN work_atendance_t a ON a.staff_id = w.staff_id
+	AND a. MONTH = w. MONTH
+	LEFT JOIN (
+		SELECT
+			s.staff_id,
+			(@rowNum :=@rowNum + 1) ranking,
+			sum(s.points) sumOfPoints
+		FROM
+			work_time_sheet_t s,
+			(SELECT(@rowNum := 0)) b
+		WHERE
+			s. MONTH = #{month,jdbcType=INTEGER}
+		GROUP BY
+			s.staff_id
+		ORDER BY
+			sumOfPoints
+	) r ON r.staff_id = w.staff_id
+	WHERE
+		w. MONTH = #{month,jdbcType=INTEGER}
+    <if test="staffId != null and staffId!= '' ">
+	  AND w.staff_id = #{staffId,jdbcType=VARCHAR}
+    </if>
   </select>
   
-  <select id="listByMonthNStaffId" parameterType="java.util.Map" resultMap="BaseResultMap">
+  <select id="listByMonthNStaffId" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from work_time_sheet_t
     where staff_id =#{staffId,jdbcType=VARCHAR}
       and month = #{month,jdbcType=INTEGER}
   </select>
-  
 </mapper>

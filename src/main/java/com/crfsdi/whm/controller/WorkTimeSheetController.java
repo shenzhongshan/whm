@@ -66,19 +66,19 @@ public class WorkTimeSheetController {
     	wtsRepo.delete(id);
     }
     
-    @RequestMapping("/comfirm/{month,staffId}")
+    @RequestMapping("/comfirm/{month},{staffId}")
     public void comfirm(@PathVariable("month") Long month,@PathVariable("staffId") String  staffId) {
     	log.info("comfirm Work Timesheet, month: {}, staff id:{}", month, staffId);
     	wtsRepo.confirm(month, staffId);
     }
     
-    @RequestMapping("/submit/{month,staffId}")
+    @RequestMapping("/submit/{month},{staffId}")
     public void submit(@PathVariable("month") Long month,@PathVariable("staffId") String  staffId) {
     	log.info("submit Work Timesheet, month: {}, staff id:{}", month, staffId);
     	wtsRepo.submit(month,staffId);
     }
     
-    @RequestMapping("/report/{month,staffId}")
+    @RequestMapping("/report/{month},{staffId}")
     public List<StaffMonthStatistics> report(@PathVariable("month") Long month,@PathVariable("staffId") String  staffId) {
     	log.info("report Work Timesheet, month: {}, staff id:{}", month, staffId);
     	return wtsRepo.listStaffMonthStatistics(month, staffId);
