@@ -1,11 +1,14 @@
 package com.crfsdi.whm.service.impl;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
@@ -14,6 +17,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,6 +25,7 @@ import org.thymeleaf.util.StringUtils;
 
 import com.crfsdi.whm.model.Person;
 import com.crfsdi.whm.model.Project;
+import com.crfsdi.whm.model.StaffMonthStatistics;
 import com.crfsdi.whm.model.WorkAtendance;
 import com.crfsdi.whm.repository.ProjectRepository;
 import com.crfsdi.whm.repository.UserRepository;
@@ -237,10 +242,60 @@ public class ExcelImExportServiceImpl implements ExcelImExportService {
 
 	@Override
 	public void exportReportByYear(File outfile, Integer year) {
-		// TODO Auto-generated method stub
+		  Workbook wb;
+		  if(outfile.getName().endsWith(".xls")) {
+			  wb = new HSSFWorkbook();
+		  }else {
+	          wb = new XSSFWorkbook();
+	      }
+		 Sheet reportSheet = wb.createSheet("report");
+		
+		List<StaffMonthStatistics> monthStatistics = this.wtsRepo.listStaffMonthStatistics(201807L, "01234566");
+		if(monthStatistics!=null) {
+			for(StaffMonthStatistics s : monthStatistics) {
+				createStatffBlock(s,reportSheet);
+			}
+		}
+		
+		//输出到文件
+        writeOut(outfile, wb);
 
 	}
+
+
+
+
+
+	private void writeOut(File outfile, Workbook wb) {
+		FileOutputStream out = null;
+		try {
+			if(!outfile.exists()) {
+				outfile.createNewFile();
+			}
+			out = new FileOutputStream(outfile);
+	        wb.write(out);
+		} catch (IOException e) {
+			log.error("IO Error", e);
+		}finally {
+	        try {
+	        	if(out!=null) {
+					out.close();
+	        	}
+			} catch (IOException e) {
+               log.warn("file close", e);
+			}
+		}
+	}
 	
+	private void createStatffBlock(StaffMonthStatistics s, Sheet reportSheet) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+
 	private Sheet getImportSheet(File infile) {
 		Sheet sheet = null;
 		try {
