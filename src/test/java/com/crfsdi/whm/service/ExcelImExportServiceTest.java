@@ -38,7 +38,8 @@ public class ExcelImExportServiceTest {
 
 	@Test
 	public void testExportReportByYear() {
-		fail("Not yet implemented");
+		File infile = new File("E:\\ws_szs\\exceltest\\report.xlsx");
+		excelImExportService.exportReportByYear(infile, 2018);
 	}
 
 }

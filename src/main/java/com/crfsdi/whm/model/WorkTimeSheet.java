@@ -19,4 +19,5 @@ public class WorkTimeSheet {
 	private Double workComfirm;
 	private Double points;
 	private Integer status;
+	private Project project;
 }

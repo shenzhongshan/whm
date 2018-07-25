@@ -14,6 +14,8 @@ public class StaffMonthStatistics {
 	private Double monthFillRate;
 	 //本月排名	
 	 private Long ranking;
+	 //排名总数
+	 private Long count;
 	 //本月总积点
 	 private Double sumOfPoints;
 	 //员工

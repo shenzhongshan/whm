@@ -11,6 +11,7 @@ import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
@@ -27,6 +28,7 @@ import com.crfsdi.whm.model.Person;
 import com.crfsdi.whm.model.Project;
 import com.crfsdi.whm.model.StaffMonthStatistics;
 import com.crfsdi.whm.model.WorkAtendance;
+import com.crfsdi.whm.model.WorkTimeSheet;
 import com.crfsdi.whm.repository.ProjectRepository;
 import com.crfsdi.whm.repository.UserRepository;
 import com.crfsdi.whm.repository.WorkAtendanceRepository;
@@ -242,54 +244,165 @@ public class ExcelImExportServiceImpl implements ExcelImExportService {
 
 	@Override
 	public void exportReportByYear(File outfile, Integer year) {
-		  Workbook wb;
-		  if(outfile.getName().endsWith(".xls")) {
-			  wb = new HSSFWorkbook();
-		  }else {
-	          wb = new XSSFWorkbook();
-	      }
-		 Sheet reportSheet = wb.createSheet("report");
-		
-		List<StaffMonthStatistics> monthStatistics = this.wtsRepo.listStaffMonthStatistics(201807L, "01234566");
-		if(monthStatistics!=null) {
-			for(StaffMonthStatistics s : monthStatistics) {
-				createStatffBlock(s,reportSheet);
+		Workbook wb;
+		if (outfile.getName().endsWith(".xls")) {
+			wb = new HSSFWorkbook();
+		} else {
+			wb = new XSSFWorkbook();
+		}
+		Sheet reportSheet = wb.createSheet("report");
+		int rownum = 0;
+		for (int i = 0; i < 12; i++) {// 1 to 12 month
+			Long thisMonth = year * 100L + i + 1;
+			Row monthRow = reportSheet.createRow(rownum++);
+			Cell monthCell = monthRow.createCell(0);
+			monthCell.setCellValue(thisMonth.toString().replaceFirst(year.toString(), year.toString()+"-"));
+			List<StaffMonthStatistics> monthStatistics = this.wtsRepo.listStaffMonthStatistics(thisMonth, null);
+			if (monthStatistics != null) {
+				for (StaffMonthStatistics s : monthStatistics) {
+					rownum = createStaffBlock(s, reportSheet,rownum);
+				}
+				rownum++;
 			}
 		}
-		
-		//输出到文件
-        writeOut(outfile, wb);
+
+		// 输出到文件
+		writeOut(outfile, wb);
 
 	}
-
-
-
-
 
 	private void writeOut(File outfile, Workbook wb) {
 		FileOutputStream out = null;
 		try {
-			if(!outfile.exists()) {
+			if (!outfile.exists()) {
 				outfile.createNewFile();
 			}
 			out = new FileOutputStream(outfile);
-	        wb.write(out);
+			wb.write(out);
 		} catch (IOException e) {
 			log.error("IO Error", e);
-		}finally {
-	        try {
-	        	if(out!=null) {
+		} finally {
+			try {
+				if (out != null) {
 					out.close();
-	        	}
+				}
 			} catch (IOException e) {
-               log.warn("file close", e);
+				log.warn("file close", e);
 			}
 		}
 	}
 	
-	private void createStatffBlock(StaffMonthStatistics s, Sheet reportSheet) {
-		// TODO Auto-generated method stub
+	private Integer createStaffBlock(StaffMonthStatistics s, Sheet sheet, Integer rownum) {
+		Integer rn = rownum;
+		Person p = s.getStaff();
+		Row staffTitleRow = sheet.createRow(rn++);
+		Row staffValueRow = sheet.createRow(rn++);
+		createStaffCells(s, p, staffTitleRow, staffValueRow);
 		
+		Row WorkTimeSheetTitleRow = sheet.createRow(rn++);
+		createWorkTimeSheetTitleCells(WorkTimeSheetTitleRow);
+		List<WorkTimeSheet> list = s.getWorksheets();
+		if(list != null && list.size()>0) {
+			for(WorkTimeSheet w : list) {
+				Row WorkTimeSheetRow = sheet.createRow(rn++);
+				createWorkTimeSheetCells(w,WorkTimeSheetRow);
+			}
+		}
+		return rn;
+	}
+
+
+
+
+
+	private void createWorkTimeSheetCells(WorkTimeSheet w, Row WorkTimeSheetRow ) {
+		int c = 1;
+		//("项目编号");
+		WorkTimeSheetRow.createCell(c++).setCellValue(w.getPrjId());
+		Project prj = w.getProject();
+		//("项目名称");
+		WorkTimeSheetRow.createCell(c++).setCellValue(prj.getName());
+		//("项目阶段");
+		WorkTimeSheetRow.createCell(c++).setCellValue(w.getPrjPhase());
+		//("项目标准");
+		WorkTimeSheetRow.createCell(c++).setCellValue(prj.getStandard());
+		//("项目规模");
+		WorkTimeSheetRow.createCell(c++).setCellValue(prj.getScale());
+		//("项目类型");
+		WorkTimeSheetRow.createCell(c++).setCellValue(prj.getType());
+		//("本人任职");
+		WorkTimeSheetRow.createCell(c++).setCellValue(w.getPrjPosition());
+		//("本月起始日期");
+		WorkTimeSheetRow.createCell(c++).setCellValue(w.getStartDate());
+		//("本月结束日期");
+		WorkTimeSheetRow.createCell(c++).setCellValue(w.getEndDate());
+		//("工效认定");
+		WorkTimeSheetRow.createCell(c++).setCellValue(w.getWorkComfirm());
+		//("本项工作积点");
+		WorkTimeSheetRow.createCell(c++).setCellValue(w.getPoints());
+		
+	}
+
+
+
+
+
+	private void createWorkTimeSheetTitleCells(Row workTimeSheetTitleRow) {
+		int c = 1;
+		workTimeSheetTitleRow.createCell(c++).setCellValue("项目编号");
+
+		workTimeSheetTitleRow.createCell(c++).setCellValue("项目名称");
+
+		workTimeSheetTitleRow.createCell(c++).setCellValue("项目阶段");
+
+		workTimeSheetTitleRow.createCell(c++).setCellValue("项目标准");
+
+		workTimeSheetTitleRow.createCell(c++).setCellValue("项目规模");
+
+		workTimeSheetTitleRow.createCell(c++).setCellValue("项目类型");
+
+		workTimeSheetTitleRow.createCell(c++).setCellValue("本人任职");
+
+		workTimeSheetTitleRow.createCell(c++).setCellValue("本月起始日期");
+
+		workTimeSheetTitleRow.createCell(c++).setCellValue("本月结束日期");
+
+		workTimeSheetTitleRow.createCell(c++).setCellValue("工效认定");
+
+		workTimeSheetTitleRow.createCell(c++).setCellValue("本项工作积点");
+
+	}
+
+
+
+
+
+	private void createStaffCells(StaffMonthStatistics s, Person p, Row staffTitleRow, Row staffValueRow) {
+		int c = 1;
+		staffTitleRow.createCell(c).setCellValue("序号");
+		staffValueRow.createCell(c++).setCellValue(s.getRanking());
+		staffTitleRow.createCell(c).setCellValue("工号");
+		staffValueRow.createCell(c++).setCellValue(p.getUsername());
+		staffTitleRow.createCell(c).setCellValue("姓名");
+		staffValueRow.createCell(c++).setCellValue(p.getStaffName());
+		staffTitleRow.createCell(c).setCellValue("性别");
+		staffValueRow.createCell(c++).setCellValue(p.gender());
+		staffTitleRow.createCell(c).setCellValue("年龄");
+		staffValueRow.createCell(c++).setCellValue(p.age());
+		staffTitleRow.createCell(c).setCellValue("职务");
+		staffValueRow.createCell(c++).setCellValue(CodeUtil.getJobTitle(p.getJobTitle()));
+		staffTitleRow.createCell(c).setCellValue("职称");
+		staffValueRow.createCell(c++).setCellValue(CodeUtil.getPosition(p.getPosition()));
+		staffTitleRow.createCell(c).setCellValue("岗位层级");
+		staffValueRow.createCell(c++).setCellValue(String.valueOf(p.getLevel()));
+		staffTitleRow.createCell(c).setCellValue("本月工时识别率");
+		staffValueRow.createCell(c++).setCellValue(s.getMonthOccurRate());
+		staffTitleRow.createCell(c).setCellValue("本月工时填报率");
+		staffValueRow.createCell(c++).setCellValue(s.getMonthOccurRate());
+		staffTitleRow.createCell(c).setCellValue("本月总积点");
+		staffValueRow.createCell(c++).setCellValue(s.getSumOfPoints());
+		staffTitleRow.createCell(c).setCellValue("本月室排名");
+		staffValueRow.createCell(c++).setCellValue(s.getRanking()+"/"+s.getCount());
 	}
 
 

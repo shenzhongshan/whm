@@ -15,6 +15,7 @@
     <result column="work_comfirm" jdbcType="FLOAT" property="workComfirm" />
     <result column="points" jdbcType="FLOAT" property="points" />
     <result column="status" jdbcType="INTEGER" property="status" />
+    <association property="project" column="prj_id" select="com.crfsdi.whm.repository.ProjectRepository.findByPrjId"/>
   </resultMap>
   <sql id="Base_Column_List">
 	id,
@@ -140,6 +141,7 @@
     <result column="monthOccurRate" jdbcType="FLOAT" property="monthOccurRate" />
     <result column="monthFillRate" jdbcType="FLOAT" property="monthFillRate" />
     <result column="ranking" jdbcType="INTEGER" property="ranking" />
+    <result column="count" jdbcType="INTEGER" property="count" />
     <result column="sumOfPoints" jdbcType="FLOAT" property="sumOfPoints" />
     <association property="staff" column="staffId" select="com.crfsdi.whm.repository.UserRepository.findByUsername"/>
     <collection property="worksheets" column="{staffId=staffId, month=month}" select="listByMonthNStaffId"/>
@@ -152,6 +154,7 @@
 		a.month_occur_rate monthOccurRate,
 		a.month_fill_rate monthFillRate,
 		r.ranking ranking,
+		r.count,
 		r.sumOfPoints sumOfPoints
 	FROM employee_t e	
     JOIN work_time_sheet_t w ON w.staff_id = e.staff_id
@@ -160,6 +163,7 @@
 	LEFT JOIN (
 		SELECT
 			s.staff_id,
+			count(s.staff_id) count,
 			(@rowNum :=@rowNum + 1) ranking,
 			sum(s.points) sumOfPoints
 		FROM

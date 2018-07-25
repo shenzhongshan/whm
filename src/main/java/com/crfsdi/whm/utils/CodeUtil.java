@@ -19,13 +19,25 @@ public  class CodeUtil {
 		if(StringUtils.isEmpty(trimName)) {
 			return null;
 		}else {
-			return KV_JOBTITLE.get(trimName);
+			return KV_JOBTITLE_R.get(trimName);
 		}
 	}
-
-
-
-
+	
+	/**
+	 * code to 职称中文名称
+	 * 
+	 * 职称:JT001-教授级高级工程师,JT002-高级工程师任,JT003-工程师,JT004-助理工程师,JT005-见习生
+	 * @param jtcode
+	 * @return
+	 */
+	public static String getJobTitle(String jtcode) {
+		String trimCode = StringUtils.trimAllWhitespace(jtcode);
+		if(StringUtils.isEmpty(trimCode)) {
+			return null;
+		}else {
+			return KV_JOBTITLE.get(trimCode);
+		}
+	}
 
 	/**
 	 * 职务中文名称 to code
@@ -39,25 +51,57 @@ public  class CodeUtil {
 		if(StringUtils.isEmpty(trimName)) {
 			return null;
 		}else {
-			return KV_POSOTION.get(trimName);
+			return KV_POSOTION_R.get(trimName);
 		}
 
 	}
+	
+	/**
+	 * code to 职务中文名称
+	 * 
+	 * 职务:PN001-主任,PN002-副主任,PN003-一般设计人员
+	 * @param stringCellValue
+	 * @return
+	 */
+	public static String getPosition(String pcode) {
+		String trimCode = StringUtils.trimAllWhitespace(pcode);
+		if(StringUtils.isEmpty(trimCode)) {
+			return null;
+		}else {
+			return KV_POSOTION.get(trimCode);
+		}
+
+	}
+	
 	@SuppressWarnings("serial")
 	//职务:PN001-主任,PN002-副主任,PN003-一般设计人员
 	private static 	Map<String,String> KV_POSOTION = new HashMap<String,String>(){{
-		this.put("主任", "PN001");
-		this.put("副主任", "PN002");
-		this.put("一般设计人员", "PN003");
+		this.put("PN001", "主任");
+		this.put("PN002", "副主任");
+		this.put("PN003", "一般设计人员");
+	}};
+	
+	@SuppressWarnings("serial")
+	private static 	Map<String,String> KV_POSOTION_R = new HashMap<String,String>(){{
+		KV_POSOTION.forEach((k, v)->{
+			this.put(v,k);
+		});
 	}};
 	
 	@SuppressWarnings("serial")
 	//职称:JT001-教授级高级工程师,JT002-高级工程师,JT003-工程师,JT004-助理工程师,JT005-见习生
 	private static 	Map<String,String> KV_JOBTITLE = new HashMap<String,String>(){{
-		this.put("教授级高级工程师", "JT001");
-		this.put("高级工程师", "JT002");
-		this.put("工程师", "JT003");
-		this.put("助理工程师", "JT004");
-		this.put("见习生", "JT005");
+		this.put("JT001", "教授级高级工程师");
+		this.put("JT002", "高级工程师");
+		this.put("JT003", "工程师");
+		this.put("JT004", "助理工程师");
+		this.put("JT005", "见习生");
+	}};
+	
+	@SuppressWarnings("serial")
+	private static 	Map<String,String> KV_JOBTITLE_R = new HashMap<String,String>(){{
+		KV_JOBTITLE.forEach((k, v)->{
+			this.put(v,k);
+		});
 	}};
 }
