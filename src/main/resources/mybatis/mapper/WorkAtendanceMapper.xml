@@ -62,12 +62,6 @@
   <update id="update" parameterType="com.crfsdi.whm.model.WorkAtendance">
     update work_atendance_t
     <set>
-      <if test="month != null">
-        month = #{month,jdbcType=VARCHAR},
-      </if>
-      <if test="staffId != null">
-        staff_id = #{staffId,jdbcType=CHAR},
-      </if>
       <if test="monthOccurRate != null">
         month_occur_rate = #{monthOccurRate,jdbcType=FLOAT},
       </if>

@@ -11,7 +11,7 @@ public class WorkAtendance {
 	private String staffId;
 	private Double monthOccurRate;
 	private Double monthFillRate;
-	private Date createTime;
-	private Date updateTime;
+    private Date createDate;
+    private Date UpdateDate;
 
 }
