@@ -5,15 +5,23 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -250,7 +258,23 @@ public class ExcelImExportServiceImpl implements ExcelImExportService {
 		} else {
 			wb = new XSSFWorkbook();
 		}
+		Map<String, CellStyle> styles = createStyles(wb);
 		Sheet reportSheet = wb.createSheet("report");
+		reportSheet.setFitToPage(true);
+		reportSheet.setHorizontallyCenter(true);
+		reportSheet.setColumnWidth(0, 8*256);
+		reportSheet.setColumnWidth(1, 16*256);
+		reportSheet.setColumnWidth(2, 20*256);
+		reportSheet.setColumnWidth(3, 20*256);
+		reportSheet.setColumnWidth(4, 20*256);
+		reportSheet.setColumnWidth(5, 20*256);
+		reportSheet.setColumnWidth(6, 20*256);
+		reportSheet.setColumnWidth(7, 20*256);
+		reportSheet.setColumnWidth(8, 16*256);
+		reportSheet.setColumnWidth(9, 16*256);
+		reportSheet.setColumnWidth(10, 10*256);
+		reportSheet.setColumnWidth(11, 10*256);
+		reportSheet.setColumnWidth(12, 10*256);
 		int rownum = 0;
 		for (int i = 0; i < 12; i++) {// 1 to 12 month
 			Long thisMonth = year * 100L + i + 1;
@@ -260,7 +284,7 @@ public class ExcelImExportServiceImpl implements ExcelImExportService {
 			List<StaffMonthStatistics> monthStatistics = this.wtsRepo.listStaffMonthStatistics(thisMonth, null);
 			if (monthStatistics != null) {
 				for (StaffMonthStatistics s : monthStatistics) {
-					rownum = createStaffBlock(s, reportSheet,rownum);
+					rownum = createStaffBlock(s, reportSheet,rownum,styles);
 				}
 				rownum++;
 			}
@@ -270,6 +294,54 @@ public class ExcelImExportServiceImpl implements ExcelImExportService {
 		writeOut(outfile, wb);
 
 	}
+
+	private Map<String, CellStyle> createStyles(Workbook wb) {
+        Map<String, CellStyle> styles = new HashMap<>();
+        CellStyle style;
+        Font titleFont = wb.createFont();
+        titleFont.setFontHeightInPoints((short)14);
+        titleFont.setBold(true);
+        style = wb.createCellStyle();
+        style.setAlignment(HorizontalAlignment.CENTER);
+        style.setVerticalAlignment(VerticalAlignment.CENTER);
+        style.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
+        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        style.setFont(titleFont);
+        styles.put("staffTitle", style);
+
+        Font monthFont = wb.createFont();
+        monthFont.setFontHeightInPoints((short)10);
+        monthFont.setColor(IndexedColors.WHITE.getIndex());
+        style = wb.createCellStyle();
+        style.setAlignment(HorizontalAlignment.CENTER);
+        style.setVerticalAlignment(VerticalAlignment.CENTER);
+        style.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
+        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        style.setFont(monthFont);
+        style.setWrapText(true);
+        styles.put("worksheetHeader", style);
+
+        Font stringFont = wb.createFont();
+        titleFont.setFontHeightInPoints((short)8);
+        style = wb.createCellStyle();
+        style.setAlignment(HorizontalAlignment.CENTER);
+        style.setWrapText(true);
+        style.setFont(stringFont);
+        styles.put("cellString", style);
+
+        style = wb.createCellStyle();
+        style.setAlignment(HorizontalAlignment.CENTER);
+        style.setVerticalAlignment(VerticalAlignment.CENTER);
+        style.setDataFormat(wb.createDataFormat().getFormat("yyyy-MM-dd"));
+        style.setFont(stringFont);
+        styles.put("date", style);
+
+        return styles;
+	}
+
+
+
+
 
 	private void writeOut(File outfile, Workbook wb) {
 		FileOutputStream out = null;
@@ -292,20 +364,20 @@ public class ExcelImExportServiceImpl implements ExcelImExportService {
 		}
 	}
 	
-	private Integer createStaffBlock(StaffMonthStatistics s, Sheet sheet, Integer rownum) {
+	private Integer createStaffBlock(StaffMonthStatistics s, Sheet sheet, Integer rownum, Map<String, CellStyle> styles) {
 		Integer rn = rownum;
 		Person p = s.getStaff();
 		Row staffTitleRow = sheet.createRow(rn++);
 		Row staffValueRow = sheet.createRow(rn++);
-		createStaffCells(s, p, staffTitleRow, staffValueRow);
+		createStaffCells(s, p, staffTitleRow, staffValueRow, styles);
 		
 		Row WorkTimeSheetTitleRow = sheet.createRow(rn++);
-		createWorkTimeSheetTitleCells(WorkTimeSheetTitleRow);
+		createWorkTimeSheetTitleCells(WorkTimeSheetTitleRow,styles);
 		List<WorkTimeSheet> list = s.getWorksheets();
 		if(list != null && list.size()>0) {
 			for(WorkTimeSheet w : list) {
 				Row WorkTimeSheetRow = sheet.createRow(rn++);
-				createWorkTimeSheetCells(w,WorkTimeSheetRow);
+				createWorkTimeSheetCells(w,WorkTimeSheetRow,styles);
 			}
 		}
 		return rn;
@@ -315,31 +387,54 @@ public class ExcelImExportServiceImpl implements ExcelImExportService {
 
 
 
-	private void createWorkTimeSheetCells(WorkTimeSheet w, Row WorkTimeSheetRow ) {
+	private void createWorkTimeSheetCells(WorkTimeSheet w, Row WorkTimeSheetRow, Map<String, CellStyle> styles ) {
 		int c = 1;
+		Cell cell;
 		//("项目编号");
-		WorkTimeSheetRow.createCell(c++).setCellValue(w.getPrjId());
+		cell = WorkTimeSheetRow.createCell(c++);
+		cell.setCellValue(w.getPrjId());
+		cell.setCellStyle(styles.get("cellString"));
 		Project prj = w.getProject();
 		//("项目名称");
-		WorkTimeSheetRow.createCell(c++).setCellValue(prj.getName());
+		cell = WorkTimeSheetRow.createCell(c++);
+		cell.setCellValue(prj.getName());
+		cell.setCellStyle(styles.get("cellString"));
 		//("项目阶段");
-		WorkTimeSheetRow.createCell(c++).setCellValue(w.getPrjPhase());
+		cell = WorkTimeSheetRow.createCell(c++);
+		cell.setCellValue(w.getPrjPhase());
+		cell.setCellStyle(styles.get("cellString"));
 		//("项目标准");
-		WorkTimeSheetRow.createCell(c++).setCellValue(prj.getStandard());
+		cell = WorkTimeSheetRow.createCell(c++);
+		cell.setCellValue(prj.getStandard());
+		cell.setCellStyle(styles.get("cellString"));
 		//("项目规模");
-		WorkTimeSheetRow.createCell(c++).setCellValue(prj.getScale());
+		cell = WorkTimeSheetRow.createCell(c++);
+		cell.setCellValue(prj.getScale());
+		cell.setCellStyle(styles.get("cellString"));
 		//("项目类型");
-		WorkTimeSheetRow.createCell(c++).setCellValue(prj.getType());
+		cell = WorkTimeSheetRow.createCell(c++);
+		cell.setCellValue(prj.getType());
+		cell.setCellStyle(styles.get("cellString"));
 		//("本人任职");
-		WorkTimeSheetRow.createCell(c++).setCellValue(w.getPrjPosition());
+		cell = WorkTimeSheetRow.createCell(c++);
+		cell.setCellValue(w.getPrjPosition());
+		cell.setCellStyle(styles.get("cellString"));
 		//("本月起始日期");
-		WorkTimeSheetRow.createCell(c++).setCellValue(w.getStartDate());
+		Cell csd = WorkTimeSheetRow.createCell(c++);
+		csd.setCellStyle(styles.get("date"));
+		csd.setCellValue(w.getStartDate());
 		//("本月结束日期");
-		WorkTimeSheetRow.createCell(c++).setCellValue(w.getEndDate());
+		Cell ced = WorkTimeSheetRow.createCell(c++);
+		ced.setCellStyle(styles.get("date"));
+		ced.setCellValue(w.getEndDate());
 		//("工效认定");
-		WorkTimeSheetRow.createCell(c++).setCellValue(w.getWorkComfirm());
+		cell = WorkTimeSheetRow.createCell(c++);
+		cell.setCellValue(w.getWorkComfirm());
+		cell.setCellStyle(styles.get("cellString"));
 		//("本项工作积点");
-		WorkTimeSheetRow.createCell(c++).setCellValue(w.getPoints());
+		cell = WorkTimeSheetRow.createCell(c++);
+		cell.setCellValue(w.getPoints());
+		cell.setCellStyle(styles.get("cellString"));
 		
 	}
 
@@ -347,29 +442,42 @@ public class ExcelImExportServiceImpl implements ExcelImExportService {
 
 
 
-	private void createWorkTimeSheetTitleCells(Row workTimeSheetTitleRow) {
+	private void createWorkTimeSheetTitleCells(Row workTimeSheetTitleRow, Map<String, CellStyle> styles) {
 		int c = 1;
-		workTimeSheetTitleRow.createCell(c++).setCellValue("项目编号");
-
-		workTimeSheetTitleRow.createCell(c++).setCellValue("项目名称");
-
-		workTimeSheetTitleRow.createCell(c++).setCellValue("项目阶段");
-
-		workTimeSheetTitleRow.createCell(c++).setCellValue("项目标准");
-
-		workTimeSheetTitleRow.createCell(c++).setCellValue("项目规模");
-
-		workTimeSheetTitleRow.createCell(c++).setCellValue("项目类型");
-
-		workTimeSheetTitleRow.createCell(c++).setCellValue("本人任职");
-
-		workTimeSheetTitleRow.createCell(c++).setCellValue("本月起始日期");
-
-		workTimeSheetTitleRow.createCell(c++).setCellValue("本月结束日期");
-
-		workTimeSheetTitleRow.createCell(c++).setCellValue("工效认定");
-
-		workTimeSheetTitleRow.createCell(c++).setCellValue("本项工作积点");
+		Cell cell;
+		cell = workTimeSheetTitleRow.createCell(c++);
+		cell.setCellStyle(styles.get("worksheetHeader"));
+		cell.setCellValue("项目编号");
+		cell = workTimeSheetTitleRow.createCell(c++);
+		cell.setCellStyle(styles.get("worksheetHeader"));
+		cell.setCellValue("项目名称");
+		cell = workTimeSheetTitleRow.createCell(c++);
+		cell.setCellStyle(styles.get("worksheetHeader"));
+		cell.setCellValue("项目阶段");
+		cell = workTimeSheetTitleRow.createCell(c++);
+		cell.setCellStyle(styles.get("worksheetHeader"));
+		cell.setCellValue("项目标准");
+		cell = workTimeSheetTitleRow.createCell(c++);
+		cell.setCellStyle(styles.get("worksheetHeader"));
+		cell.setCellValue("项目规模");
+		cell = workTimeSheetTitleRow.createCell(c++);
+		cell.setCellStyle(styles.get("worksheetHeader"));
+		cell.setCellValue("项目类型");
+		cell = workTimeSheetTitleRow.createCell(c++);
+		cell.setCellStyle(styles.get("worksheetHeader"));
+		cell.setCellValue("本人任职");
+		cell = workTimeSheetTitleRow.createCell(c++);
+		cell.setCellStyle(styles.get("worksheetHeader"));
+		cell.setCellValue("本月起始日期");
+		cell = workTimeSheetTitleRow.createCell(c++);
+		cell.setCellStyle(styles.get("worksheetHeader"));
+		cell.setCellValue("本月结束日期");
+		cell = workTimeSheetTitleRow.createCell(c++);
+		cell.setCellStyle(styles.get("worksheetHeader"));
+		cell.setCellValue("工效认定");
+		cell = workTimeSheetTitleRow.createCell(c++);
+		cell.setCellStyle(styles.get("worksheetHeader"));
+		cell.setCellValue("本项工作积点");
 
 	}
 
@@ -377,32 +485,81 @@ public class ExcelImExportServiceImpl implements ExcelImExportService {
 
 
 
-	private void createStaffCells(StaffMonthStatistics s, Person p, Row staffTitleRow, Row staffValueRow) {
+	private void createStaffCells(StaffMonthStatistics s, Person p, Row staffTitleRow, Row staffValueRow, Map<String, CellStyle> styles) {
 		int c = 1;
-		staffTitleRow.createCell(c).setCellValue("序号");
-		staffValueRow.createCell(c++).setCellValue(s.getRanking());
-		staffTitleRow.createCell(c).setCellValue("工号");
-		staffValueRow.createCell(c++).setCellValue(p.getUsername());
-		staffTitleRow.createCell(c).setCellValue("姓名");
-		staffValueRow.createCell(c++).setCellValue(p.getStaffName());
-		staffTitleRow.createCell(c).setCellValue("性别");
-		staffValueRow.createCell(c++).setCellValue(p.gender());
-		staffTitleRow.createCell(c).setCellValue("年龄");
-		staffValueRow.createCell(c++).setCellValue(p.age());
-		staffTitleRow.createCell(c).setCellValue("职务");
-		staffValueRow.createCell(c++).setCellValue(CodeUtil.getJobTitle(p.getJobTitle()));
-		staffTitleRow.createCell(c).setCellValue("职称");
-		staffValueRow.createCell(c++).setCellValue(CodeUtil.getPosition(p.getPosition()));
-		staffTitleRow.createCell(c).setCellValue("岗位层级");
-		staffValueRow.createCell(c++).setCellValue(String.valueOf(p.getLevel()));
-		staffTitleRow.createCell(c).setCellValue("本月工时识别率");
-		staffValueRow.createCell(c++).setCellValue(s.getMonthOccurRate());
-		staffTitleRow.createCell(c).setCellValue("本月工时填报率");
-		staffValueRow.createCell(c++).setCellValue(s.getMonthOccurRate());
-		staffTitleRow.createCell(c).setCellValue("本月总积点");
-		staffValueRow.createCell(c++).setCellValue(s.getSumOfPoints());
-		staffTitleRow.createCell(c).setCellValue("本月室排名");
-		staffValueRow.createCell(c++).setCellValue(s.getRanking()+"/"+s.getCount());
+		Cell cell;
+		cell = staffTitleRow.createCell(c);
+		cell.setCellValue("序号");
+		cell.setCellStyle(styles.get("staffTitle"));
+		cell = staffValueRow.createCell(c++);
+		cell.setCellValue(s.getRanking());
+		cell.setCellStyle(styles.get("cellString"));
+		cell = staffTitleRow.createCell(c);
+		cell.setCellValue("工号");
+		cell.setCellStyle(styles.get("staffTitle"));
+		cell = staffValueRow.createCell(c++);
+		cell.setCellValue(p.getUsername());
+		cell.setCellStyle(styles.get("cellString"));
+		cell = staffTitleRow.createCell(c);
+		cell.setCellValue("姓名");
+		cell.setCellStyle(styles.get("staffTitle"));
+		cell = staffValueRow.createCell(c++);
+		cell.setCellValue(p.getStaffName());
+		cell.setCellStyle(styles.get("cellString"));
+		cell = staffTitleRow.createCell(c);
+		cell.setCellValue("性别");
+		cell.setCellStyle(styles.get("staffTitle"));
+		cell = staffValueRow.createCell(c++);
+		cell.setCellValue(p.gender());
+		cell.setCellStyle(styles.get("cellString"));
+		cell = staffTitleRow.createCell(c);
+		cell.setCellValue("年龄");
+		cell.setCellStyle(styles.get("staffTitle"));
+		cell = staffValueRow.createCell(c++);
+		cell.setCellValue(p.age());
+		cell.setCellStyle(styles.get("cellString"));
+		cell = staffTitleRow.createCell(c);
+		cell.setCellValue("职务");
+		cell.setCellStyle(styles.get("staffTitle"));
+		cell = staffValueRow.createCell(c++);
+		cell.setCellValue(CodeUtil.getJobTitle(p.getJobTitle()));
+		cell.setCellStyle(styles.get("cellString"));
+		cell = staffTitleRow.createCell(c);
+		cell.setCellValue("职称");
+		cell.setCellStyle(styles.get("staffTitle"));
+		cell = staffValueRow.createCell(c++);
+		cell.setCellValue(CodeUtil.getPosition(p.getPosition()));
+		cell.setCellStyle(styles.get("cellString"));
+		cell = staffTitleRow.createCell(c);
+		cell.setCellValue("岗位层级");
+		cell.setCellStyle(styles.get("staffTitle"));
+		cell = staffValueRow.createCell(c++);
+		cell.setCellValue(String.valueOf(p.getLevel()));
+		cell.setCellStyle(styles.get("cellString"));
+		cell = staffTitleRow.createCell(c);
+		cell.setCellValue("本月工时识别率");
+		cell.setCellStyle(styles.get("staffTitle"));
+		cell = staffValueRow.createCell(c++);
+		cell.setCellValue(s.getMonthOccurRate());
+		cell.setCellStyle(styles.get("cellString"));
+		cell = staffTitleRow.createCell(c);
+		cell.setCellValue("本月工时填报率");
+		cell.setCellStyle(styles.get("staffTitle"));
+		cell = staffValueRow.createCell(c++);
+		cell.setCellValue(s.getMonthOccurRate());
+		cell.setCellStyle(styles.get("cellString"));
+		cell = staffTitleRow.createCell(c);
+		cell.setCellValue("本月总积点");
+		cell.setCellStyle(styles.get("staffTitle"));
+		cell = staffValueRow.createCell(c++);
+		cell.setCellValue(s.getSumOfPoints());
+		cell.setCellStyle(styles.get("cellString"));
+		cell = staffTitleRow.createCell(c);
+		cell.setCellValue("本月室排名");
+		cell.setCellStyle(styles.get("staffTitle"));
+		cell = staffValueRow.createCell(c++);
+		cell.setCellValue(s.getRanking()+"/"+s.getCount());
+		cell.setCellStyle(styles.get("cellString"));
 	}
 
 
