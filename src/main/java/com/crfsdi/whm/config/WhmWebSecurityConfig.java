@@ -31,7 +31,7 @@ public class WhmWebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         //忽略css.jq.img等文件
-        web.ignoring().antMatchers("/**.html", "/**.css", "/img/**", "/**.js", "/third-party/**");
+        web.ignoring().antMatchers("/**/**.html", "/css/**.css", "/img/**", "/js/**.js", "/third-party/**","/font/**");
     }
     
     @Override
