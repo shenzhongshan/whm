@@ -1,15 +1,23 @@
 package com.crfsdi.whm.controller;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.jline.utils.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.boot.configurationprocessor.json.JSONTokener;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
@@ -40,31 +48,43 @@ public class WechatUserController {
     private String weixinSecret;
 
 	@PostMapping("/login")
-    public Object login(HttpServletRequest req, String authCode) {
+    public Object login(HttpServletRequest req, @RequestParam String authCode) {
     	log.info("weichat user login, authCode {}", authCode);
     	WechatAuthInfo authInfo= requestFromWechat(authCode);
     	return authInfo;
     }
 	
-    public WechatAuthInfo requestFromWechat(String authCode) {
-    	String url = weixinApiUrl.replaceAll("APPID", weixinAppid).replaceAll("SECRET", weixinAppid).replaceAll("JSCODE", authCode);
+    public WechatAuthInfo requestFromWechat(@RequestParam String authCode) {
+    	String url = weixinApiUrl;
         Map<String,String> params = new HashMap<>();
         params.put("APPID",weixinAppid);
         params.put("SECRET",weixinSecret);
         params.put("JSCODE",authCode);
         RestTemplate restTemplate = new RestTemplate();
-        WechatAuthInfo request = restTemplate.getForObject(url,WechatAuthInfo.class,params);
-    	return request;
+        String request = restTemplate.getForObject(url,String.class,params);
+        log.info("wechat result: {}", request);
+        JSONObject obj = null;
+		try {
+			obj = (JSONObject) new JSONTokener(request).nextValue();
+		} catch (JSONException e) {
+	          Log.warn("JSONTokener error: {}", e);
+		}
+		return WechatAuthInfo.from(obj);
     }
     
     @PostMapping("/bind")
-    public String bind(String username, String password, String openid) {
+    public void bind(@RequestParam String username, @RequestParam String password, @RequestParam String openid, HttpServletRequest req,HttpServletResponse res) {
     	log.info("bind wechat user, username:{},openid:{}", username, openid);
     	Person  user = userRepo.findByUsername(username);
-    	if(user.getPassword().equals(bCryptPasswordEncoder.encode(password))) {
+    	if(bCryptPasswordEncoder.matches(password, user.getPassword())) {
     		user.setOpenId(openid);
         	userRepo.update(user);
     	}
-    	return "forward:/login";
+    	try {
+			req.getRequestDispatcher("/login").forward(req, res);
+		} catch (ServletException | IOException e) {
+			res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		}
+    	//return "forward:/login";
     }
 }
