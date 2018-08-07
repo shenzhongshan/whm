@@ -1,15 +1,28 @@
 package com.crfsdi.whm.config;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -31,7 +44,7 @@ public class WhmWebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         //忽略css.jq.img等文件
-        web.ignoring().antMatchers("/**/**.html", "/css/**.css", "/img/**", "/js/**.js", "/third-party/**","/font/**");
+        web.ignoring().antMatchers("/**/**.html", "/css/**.css", "/img/**", "/js/**.js", "/vue-easytable/**","/third-party/**","/font/**");
     }
     
     @Override
@@ -46,6 +59,41 @@ public class WhmWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
+    	auth.authenticationProvider(wechatAuthenticationProvider());
+    	DaoAuthenticationProvider daoprovider = new DaoAuthenticationProvider();
+    	daoprovider.setUserDetailsService(userDetailsService);
+    	daoprovider.setPasswordEncoder(bCryptPasswordEncoder);
+    	auth.authenticationProvider(daoprovider);
+        //auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
     }
+    
+    
+    private AuthenticationProvider wechatAuthenticationProvider() {
+    	return new AuthenticationProvider() {
+    	    @Override
+    	    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+    	    	String username = authentication.getName();
+    	    	String openid = authentication.getCredentials().toString();
+    	    	if("wechat-user".equalsIgnoreCase(username)) {
+    	    		UserDetails  usedetails = userDetailsService.loadUserByUsername(openid);
+        	        if(isMatch(authentication, usedetails)){
+        	            return new UsernamePasswordAuthenticationToken(usedetails ,authentication.getCredentials(),usedetails.getAuthorities());
+        	        }
+    	    	}
+    	        return null;
+    	    }
+
+			@Override
+    	    public boolean supports(Class<?> authentication) {
+    	        return true;
+    	    }
+
+    	    private boolean isMatch(Authentication authentication,  UserDetails usedetails){
+    	        if(usedetails != null)
+    	            return true;
+    	        else
+    	            return false;
+    	    }
+       };
+   }
 }

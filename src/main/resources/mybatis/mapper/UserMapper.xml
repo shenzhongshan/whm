@@ -53,7 +53,7 @@
     <include refid="Base_Column_List" />, r.role_name
     from employee_t e
     left join roles_t r on r.user_id = e.staff_id
-    where e.staff_id = #{username,jdbcType=VARCHAR}
+    where e.staff_id = #{username,jdbcType=VARCHAR} OR e.open_id = #{username,jdbcType=VARCHAR}
   </select>
   
   <select id="listByPage" resultMap="BaseResultMap">

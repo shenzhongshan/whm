@@ -20,6 +20,7 @@ public class Person {
     private Integer level = 0;
     private Integer sys = 0;
     private Integer status = 1;
+    private String openId;
     private Date createDate;
     private Date UpdateDate;
     private List<Role> roles;
