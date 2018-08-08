@@ -32,6 +32,19 @@
 	points,
 	status
   </sql>
+  
+ <sql id="Base_Column_List_insert">
+	staff_id,
+	month,
+	prj_id,
+	prj_phase,
+	prj_position,
+	start_date,
+	end_date,
+	work_comfirm,
+	points,
+	status
+  </sql>
     
   <select id="load" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -57,22 +70,22 @@
   </delete>
   
   <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="com.crfsdi.whm.model.WorkTimeSheet">
-    insert into work_time_sheet_t (<include refid="Base_Column_List" />)
+    insert into work_time_sheet_t (<include refid="Base_Column_List_insert" />)
     values (#{staffId,jdbcType=VARCHAR}, #{month,jdbcType=VARCHAR}, #{prjId,jdbcType=INTEGER}, 
       #{prjPhase,jdbcType=VARCHAR}, #{prjPosition,jdbcType=VARCHAR}, #{startDate,jdbcType=DATE}, 
-      #{endDate,jdbcType=DATE}, #{createTime,jdbcType=DATE}, #{updateTime,jdbcType=DATE},
+      #{endDate,jdbcType=DATE},
       #{workComfirm,jdbcType=FLOAT}, #{points,jdbcType=FLOAT},#{status,jdbcType=INTEGER}
     )
   </insert>
   
 
   <insert id="saveMore" useGeneratedKeys="true" keyProperty="id" parameterType="list">
-    insert into work_time_sheet_t (<include refid="Base_Column_List" />)
+    insert into work_time_sheet_t (<include refid="Base_Column_List_insert" />)
     values 
        <foreach collection="list" item="obj" index="index" separator="," > 
           (#{obj.staffId,jdbcType=VARCHAR}, #{obj.month,jdbcType=VARCHAR}, #{obj.prjId,jdbcType=INTEGER}, 
            #{obj.prjPhase,jdbcType=VARCHAR}, #{obj.prjPosition,jdbcType=VARCHAR}, #{obj.startDate,jdbcType=DATE}, 
-           #{obj.endDate,jdbcType=DATE}, #{obj.createTime,jdbcType=DATE}, #{obj.updateTime,jdbcType=DATE},
+           #{obj.endDate,jdbcType=DATE}, 
            #{obj.workComfirm,jdbcType=FLOAT},#{obj.points,jdbcType=FLOAT},#{obj.status,jdbcType=INTEGER}
        </foreach> 
   </insert>
