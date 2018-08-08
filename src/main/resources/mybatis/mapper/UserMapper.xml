@@ -13,6 +13,7 @@
     <result column="pwd" jdbcType="VARCHAR" property="password" />
     <result column="is_sys" jdbcType="INTEGER" property="sys" />
     <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="open_id" jdbcType="VARCHAR" property="openId" />
     <result column="create_date" jdbcType="DATE" property="createDate" />
     <result column="update_date" jdbcType="DATE" property="updateDate" />
     <collection property="roles" ofType="com.crfsdi.whm.model.Role">
@@ -31,6 +32,7 @@
 	e.pwd,
 	e.is_sys,
 	e.status,
+	e.open_id,
 	e.create_date,
 	e.update_date
   </sql>
@@ -120,6 +122,9 @@
       </if>
       <if test="status != null">
         status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="openId != null">
+        open_id = #{openId,jdbcType=VARCHAR},
       </if>
       update_date = CURRENT_TIMESTAMP
     </set>

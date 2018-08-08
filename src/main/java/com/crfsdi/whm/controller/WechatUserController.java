@@ -1,10 +1,8 @@
 package com.crfsdi.whm.controller;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -48,7 +46,7 @@ public class WechatUserController {
     private String weixinSecret;
 
 	@PostMapping("/login")
-    public Object login(HttpServletRequest req, @RequestParam String authCode) {
+    public WechatAuthInfo login(HttpServletRequest req, @RequestParam String authCode) {
     	log.info("weichat user login, authCode {}", authCode);
     	WechatAuthInfo authInfo= requestFromWechat(authCode);
     	return authInfo;
@@ -80,11 +78,5 @@ public class WechatUserController {
     		user.setOpenId(openid);
         	userRepo.update(user);
     	}
-    	try {
-			req.getRequestDispatcher("/login").forward(req, res);
-		} catch (ServletException | IOException e) {
-			res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-		}
-    	//return "forward:/login";
     }
 }

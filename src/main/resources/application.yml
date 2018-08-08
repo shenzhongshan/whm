@@ -1,8 +1,9 @@
+
 mybatis:
     config-location: classpath:mybatis/mybatis-config.xml
     mapper-locations: classpath:mybatis/mapper/*.xml
 server:
-    port: 9600
+    port: 9400
     servlet:
         context-path: /whm
 spring:
