@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.crfsdi.whm.model.Person;
 import com.crfsdi.whm.model.StaffMonthStatistics;
 import com.crfsdi.whm.model.WorkTimeSheet;
 import com.crfsdi.whm.repository.WorkTimeSheetRepository;
@@ -75,9 +76,10 @@ public class WorkTimeSheetController {
     	wtsRepo.confirm(month, staffId);
     }
     
-    @RequestMapping("/submit/{month},{staffId}")
-    public void submit(@PathVariable("month") Long month,@PathVariable("staffId") String  staffId) {
-    	log.info("submit Work Timesheet, month: {}, staff id:{}", month, staffId);
+    @RequestMapping("/submit/{month}")
+    public void submit(@PathVariable("month") Long month) {
+    	String  staffId = Person.currentUsername();
+		log.info("submit Work Timesheet, month: {}, staff id:{}", month, staffId);
     	wtsRepo.submit(month,staffId);
     }
     

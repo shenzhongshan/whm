@@ -3,6 +3,8 @@ package com.crfsdi.whm.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +27,15 @@ public class UserController {
 	@Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+	
+	
+    @RequestMapping("/getCurrentUser")
+    public Person getCurrentUser() {
+    	String  username = Person.currentUsername();
+    	log.info("get current user: {}", username);
+    	return userRepo.findByUsername(username);
+    }
+	
     @RequestMapping("/get/{id}")
     public Person load(@PathVariable("id") Long id) {
     	log.info("get user, id: {}", id);

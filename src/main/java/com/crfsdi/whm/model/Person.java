@@ -4,6 +4,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import lombok.Data;
 
 @Data
@@ -42,5 +45,10 @@ public class Person {
     		return "M".equalsIgnoreCase(this.getGender())?"男":"女";
     	}
     	
+    }
+    
+    public static String currentUsername() {
+    	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    	return (auth != null) ? auth.getName() : null;
     }
 }
