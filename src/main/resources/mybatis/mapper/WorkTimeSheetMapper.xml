@@ -133,7 +133,7 @@
     update work_time_sheet_t
     <set>
       status = 1,
-      update_date = CURRENT_TIMESTAMP
+      update_time = CURRENT_TIMESTAMP
     </set>
     where month = #{month,jdbcType=INTEGER}
       and staff_id = #{staffId,jdbcType=VARCHAR}
@@ -143,7 +143,7 @@
     update work_time_sheet_t
     <set>
       status = 2,
-      update_date = CURRENT_TIMESTAMP
+      update_time = CURRENT_TIMESTAMP
     </set>
     where month = #{month,jdbcType=INTEGER}
       and staff_id = #{staffId,jdbcType=VARCHAR}
