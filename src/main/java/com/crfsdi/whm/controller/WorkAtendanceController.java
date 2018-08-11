@@ -47,6 +47,17 @@ public class WorkAtendanceController {
     	waRepo.update(wa);
     }
     
+	@PostMapping("/save")
+	public WorkAtendance save(@RequestBody WorkAtendance wa) {
+		log.info("save Work Atendance: {}", wa);
+		if (wa.getId() != null) {
+			waRepo.update(wa);
+		} else {
+			waRepo.save(wa);
+		}
+		return wa;
+	}
+    
     @RequestMapping("/del/{id}")
     public void delete(@PathVariable("id") Long id) {
     	log.info("delete Work Atendance, id: {}", id);
