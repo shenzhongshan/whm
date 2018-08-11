@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,6 +35,13 @@ public class WorkTimeSheetController {
     	return wtsRepo.listByPage(staffId!=null?staffId:"",wts.getMonth(),page,size);
     }
     
+    @RequestMapping("/listByCurrentUser/{month}")
+    public List<WorkTimeSheet> list(@PathVariable("month") Long month) {
+    	log.info("list Work Timesheets by current user, month:{}", month);
+    	String staffId = Person.currentUsername();
+    	return wtsRepo.listByPage(staffId, month, 1L, 1000L);
+    }
+    
     @RequestMapping("/get/{id}")
     public WorkTimeSheet load(@PathVariable("id") Long id) {
     	log.info("get Work Timesheet, id: {}", id);
@@ -43,6 +51,10 @@ public class WorkTimeSheetController {
     @PostMapping("/add")
     public WorkTimeSheet add(@RequestBody WorkTimeSheet wts) {
     	log.info("add Work Timesheet: {}", wts);
+    	String staffId = Person.currentUsername();
+    	if(StringUtils.isEmpty(wts.getStaffId())) {
+    		wts.setStaffId(staffId);
+    	}
     	wtsRepo.save(wts);
     	return wts;
     }
@@ -59,6 +71,10 @@ public class WorkTimeSheetController {
     	if(wts.getId()!= null) {
         	wtsRepo.update(wts);
     	}else {
+        	String staffId = Person.currentUsername();
+        	if(StringUtils.isEmpty(wts.getStaffId())) {
+        		wts.setStaffId(staffId);
+        	}
         	wtsRepo.save(wts);
     	}
     	return wts;
