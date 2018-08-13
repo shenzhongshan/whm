@@ -5,26 +5,28 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="month" jdbcType="INTEGER" property="month" />
     <result column="staff_id" jdbcType="VARCHAR" property="staffId" />
+    <result column="staff_name" jdbcType="VARCHAR" property="staffName" />
     <result column="month_occur_rate" jdbcType="FLOAT" property="monthOccurRate" />
     <result column="month_fill_rate" jdbcType="FLOAT" property="monthFillRate" />
     <result column="create_date" jdbcType="DATE" property="createDate" />
     <result column="update_date" jdbcType="DATE" property="updateDate" />
   </resultMap>
   <sql id="Base_Column_List">
-	id,
-	month,
-	staff_id,
-	month_occur_rate,
-	month_fill_rate,
-	create_date,
-	update_date
+	wa.id,
+	wa.month,
+	wa.staff_id,
+	wa.month_occur_rate,
+	wa.month_fill_rate,
+	wa.create_date,
+	wa.update_date
   </sql>
   
   <select id="load" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
-    <include refid="Base_Column_List" />
-    from work_atendance_t
-    where id = #{id,jdbcType=INTEGER}
+    <include refid="Base_Column_List" />, e.name staff_name
+    from work_atendance_t wa 
+    left join employee_t e on e.staff_id = wa.staff_id
+    where wa.id = #{id,jdbcType=INTEGER}
   </select>
   
   <delete id="delete" parameterType="java.lang.Long">
@@ -34,11 +36,12 @@
   
   <select id="listByPage" resultMap="BaseResultMap">
     select 
-    <include refid="Base_Column_List" />
-    from work_atendance_t
-    where staff_id like CONCAT('%',#{staffId,jdbcType=VARCHAR},'%')
+    <include refid="Base_Column_List" />, e.name staff_name
+    from work_atendance_t wa
+    left join employee_t e on e.staff_id = wa.staff_id
+    where wa.staff_id like CONCAT('%',#{staffId,jdbcType=VARCHAR},'%')
     <if test="month != null">
-        and month = #{month,jdbcType=INTEGER}
+        and wa.month = #{month,jdbcType=INTEGER}
     </if>
     LIMIT #{page,jdbcType=INTEGER},#{size,jdbcType=INTEGER}
   </select>
@@ -65,8 +68,8 @@
       <if test="monthOccurRate != null">
         month_occur_rate = #{monthOccurRate,jdbcType=FLOAT},
       </if>
-      <if test="monthOccurRate != null">
-        month_occur_rate = #{monthOccurRate,jdbcType=FLOAT},
+      <if test="monthFillRate != null">
+        month_fill_rate = #{monthFillRate,jdbcType=FLOAT},
       </if>
       update_date = CURRENT_TIMESTAMP
     </set>

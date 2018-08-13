@@ -9,6 +9,7 @@ public class WorkAtendance {
 	private Long id;
 	private Long month;
 	private String staffId;
+	private String staffName;
 	private Double monthOccurRate;
 	private Double monthFillRate;
     private Date createDate;

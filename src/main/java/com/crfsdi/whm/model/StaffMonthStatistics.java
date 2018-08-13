@@ -9,15 +9,15 @@ public class StaffMonthStatistics {
 	//eg.201807
 	private Long month;
 	//本月工时识别率
-	private Double monthOccurRate;
+	private double monthOccurRate;
     //本月工时填报率
-	private Double monthFillRate;
+	private double monthFillRate;
 	 //本月排名	
-	 private Long ranking;
+	 private long ranking;
 	 //排名总数
-	 private Long count;
+	 private long count;
 	 //本月总积点
-	 private Double sumOfPoints;
+	 private double sumOfPoints;
 	 //员工
      private Person staff;
      private List<WorkTimeSheet> worksheets;
