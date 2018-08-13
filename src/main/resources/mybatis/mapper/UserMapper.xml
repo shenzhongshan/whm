@@ -55,7 +55,8 @@
     <include refid="Base_Column_List" />, r.role_name
     from employee_t e
     left join roles_t r on r.user_id = e.staff_id
-    where e.staff_id = #{username,jdbcType=VARCHAR} OR e.open_id = #{username,jdbcType=VARCHAR}
+    where e.status = 1 
+      and (e.staff_id = #{username,jdbcType=VARCHAR} OR e.open_id = #{username,jdbcType=VARCHAR})
   </select>
   
   <select id="listByPage" resultMap="BaseResultMap">
@@ -70,6 +71,7 @@
 	    <if test="staffName != null and staffName != '' ">
 	       and e.name like CONCAT('%',#{staffName,jdbcType=VARCHAR},'%')
 	    </if>
+	    and e.is_sys != 1
     </where>
     LIMIT #{page,jdbcType=INTEGER},#{size,jdbcType=INTEGER}
   </select>
