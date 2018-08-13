@@ -63,8 +63,14 @@
     <include refid="Base_Column_List" />, r.role_name
     from employee_t e
     left join roles_t r on r.user_id = e.staff_id
-    where e.staff_id like CONCAT('%',#{username,jdbcType=VARCHAR},'%')
-    and e.name like CONCAT('%',#{staffName,jdbcType=VARCHAR},'%')
+    <where>
+	    <if test="username != null and username != '' ">
+	        e.staff_id like CONCAT('%',#{username,jdbcType=VARCHAR},'%')
+	    </if>
+	    <if test="staffName != null and staffName != '' ">
+	       and e.name like CONCAT('%',#{staffName,jdbcType=VARCHAR},'%')
+	    </if>
+    </where>
     LIMIT #{page,jdbcType=INTEGER},#{size,jdbcType=INTEGER}
   </select>
   
