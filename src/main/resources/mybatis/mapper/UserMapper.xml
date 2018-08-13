@@ -6,7 +6,7 @@
     <result column="staff_id" jdbcType="VARCHAR" property="username" />
     <result column="name" jdbcType="VARCHAR" property="staffName" />
     <result column="gender" jdbcType="CHAR" property="gender" />
-    <result column="birth_date" jdbcType="DATE" property="birthDate" />
+    <result column="birth_date" jdbcType="TIMESTAMP" property="birthDate" />
     <result column="position" jdbcType="VARCHAR" property="position" />
     <result column="job_title" jdbcType="VARCHAR" property="jobTitle" />
     <result column="level" jdbcType="INTEGER" property="level" />
@@ -14,8 +14,8 @@
     <result column="is_sys" jdbcType="INTEGER" property="sys" />
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="open_id" jdbcType="VARCHAR" property="openId" />
-    <result column="create_date" jdbcType="DATE" property="createDate" />
-    <result column="update_date" jdbcType="DATE" property="updateDate" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
     <collection property="roles" ofType="com.crfsdi.whm.model.Role">
         <result column="role_name" jdbcType="VARCHAR" property="name" />
     </collection>
@@ -76,7 +76,7 @@
   <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="com.crfsdi.whm.model.Person">
     insert into employee_t (staff_id,name,gender,birth_date,position,job_title,level,pwd,is_sys,status)
     values (#{username,jdbcType=VARCHAR}, #{staffName,jdbcType=VARCHAR}, 
-      #{gender,jdbcType=CHAR}, #{birthDate,jdbcType=DATE}, #{position,jdbcType=VARCHAR}, 
+      #{gender,jdbcType=CHAR}, #{birthDate,jdbcType=TIMESTAMP}, #{position,jdbcType=VARCHAR}, 
       #{jobTitle,jdbcType=VARCHAR}, #{level,jdbcType=INTEGER}, #{password,jdbcType=VARCHAR}, 
       #{sys,jdbcType=INTEGER},#{status,jdbcType=INTEGER}  
     )
@@ -87,7 +87,7 @@
     values 
        <foreach collection="list" item="obj" index="index" separator="," > 
            (#{obj.username,jdbcType=VARCHAR}, #{obj.staffName,jdbcType=VARCHAR}, #{obj.gender,jdbcType=CHAR}, 
-            #{obj.birthDate,jdbcType=DATE}, #{obj.position,jdbcType=VARCHAR}, #{obj.jobTitle,jdbcType=VARCHAR}, 
+            #{obj.birthDate,jdbcType=TIMESTAMP}, #{obj.position,jdbcType=VARCHAR}, #{obj.jobTitle,jdbcType=VARCHAR}, 
             #{obj.level,jdbcType=INTEGER}, #{obj.password,jdbcType=VARCHAR}, #{obj.sys,jdbcType=INTEGER},
             #{obj.status,jdbcType=INTEGER})
        </foreach> 
@@ -103,7 +103,7 @@
         gender = #{gender,jdbcType=CHAR},
       </if>
       <if test="birthDate != null">
-        birth_date = #{birthDate,jdbcType=DATE},
+        birth_date = #{birthDate,jdbcType=TIMESTAMP},
       </if>
       <if test="position != null">
         position = #{position,jdbcType=VARCHAR},

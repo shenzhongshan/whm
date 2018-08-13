@@ -84,7 +84,7 @@ public class ExcelImportController {
         // 告诉浏览器用什么软件可以打开此文件
         response.setHeader("content-Type", "application/vnd.ms-excel");
         // 下载文件的默认名称
-		response.setHeader("Content-Disposition", "attachment;filename=wst-report-"+year);
+		response.setHeader("Content-Disposition", "attachment;filename=wst-report-"+year+".xlsx");
 
         File infile = null;
         BufferedInputStream bis = null;

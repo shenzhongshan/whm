@@ -8,8 +8,8 @@
     <result column="staff_name" jdbcType="VARCHAR" property="staffName" />
     <result column="month_occur_rate" jdbcType="FLOAT" property="monthOccurRate" />
     <result column="month_fill_rate" jdbcType="FLOAT" property="monthFillRate" />
-    <result column="create_date" jdbcType="DATE" property="createDate" />
-    <result column="update_date" jdbcType="DATE" property="updateDate" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
   </resultMap>
   <sql id="Base_Column_List">
 	wa.id,

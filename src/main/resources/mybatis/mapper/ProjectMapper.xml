@@ -10,8 +10,8 @@
     <result column="prj_type" jdbcType="VARCHAR" property="type" />
     <result column="prj_scale" jdbcType="DOUBLE" property="scale" />
     <result column="status" jdbcType="INTEGER" property="status" />
-    <result column="create_date" jdbcType="DATE" property="createDate" />
-    <result column="update_date" jdbcType="DATE" property="updateDate" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
   </resultMap>
   <sql id="Base_Column_List">
 	id,

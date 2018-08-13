@@ -8,10 +8,10 @@
     <result column="prj_id" jdbcType="INTEGER" property="prjId" />
     <result column="prj_phase" jdbcType="VARCHAR" property="prjPhase" />
     <result column="prj_position" jdbcType="VARCHAR" property="prjPosition" />
-    <result column="start_date" jdbcType="DATE" property="startDate" />
-    <result column="end_date" jdbcType="DATE" property="endDate" />
-    <result column="create_time" jdbcType="DATE" property="createTime" />
-    <result column="update_time" jdbcType="DATE" property="updateTime" />
+    <result column="start_date" jdbcType="TIMESTAMP" property="startDate" />
+    <result column="end_date" jdbcType="TIMESTAMP" property="endDate" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="work_comfirm" jdbcType="FLOAT" property="workComfirm" />
     <result column="points" jdbcType="FLOAT" property="points" />
     <result column="status" jdbcType="INTEGER" property="status" />
@@ -72,8 +72,8 @@
   <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="com.crfsdi.whm.model.WorkTimeSheet">
     insert into work_time_sheet_t (<include refid="Base_Column_List_insert" />)
     values (#{staffId,jdbcType=VARCHAR}, #{month,jdbcType=VARCHAR}, #{prjId,jdbcType=INTEGER}, 
-      #{prjPhase,jdbcType=VARCHAR}, #{prjPosition,jdbcType=VARCHAR}, #{startDate,jdbcType=DATE}, 
-      #{endDate,jdbcType=DATE},
+      #{prjPhase,jdbcType=VARCHAR}, #{prjPosition,jdbcType=VARCHAR}, #{startDate,jdbcType=TIMESTAMP}, 
+      #{endDate,jdbcType=TIMESTAMP},
       #{workComfirm,jdbcType=FLOAT}, #{points,jdbcType=FLOAT},#{status,jdbcType=INTEGER}
     )
   </insert>
@@ -84,8 +84,8 @@
     values 
        <foreach collection="list" item="obj" index="index" separator="," > 
           (#{obj.staffId,jdbcType=VARCHAR}, #{obj.month,jdbcType=VARCHAR}, #{obj.prjId,jdbcType=INTEGER}, 
-           #{obj.prjPhase,jdbcType=VARCHAR}, #{obj.prjPosition,jdbcType=VARCHAR}, #{obj.startDate,jdbcType=DATE}, 
-           #{obj.endDate,jdbcType=DATE}, 
+           #{obj.prjPhase,jdbcType=VARCHAR}, #{obj.prjPosition,jdbcType=VARCHAR}, #{obj.startDate,jdbcType=TIMESTAMP}, 
+           #{obj.endDate,jdbcType=TIMESTAMP}, 
            #{obj.workComfirm,jdbcType=FLOAT},#{obj.points,jdbcType=FLOAT},#{obj.status,jdbcType=INTEGER}
        </foreach> 
   </insert>
@@ -110,10 +110,10 @@
         prj_position = #{prjPosition,jdbcType=VARCHAR},
       </if>
       <if test="startDate != null">
-        start_date = #{startDate,jdbcType=DATE},
+        start_date = #{startDate,jdbcType=TIMESTAMP},
       </if>
-      <if test="startDate != null">
-        end_date = #{startDate,jdbcType=DATE},
+      <if test="endDate != null">
+        end_date = #{endDate,jdbcType=TIMESTAMP},
       </if>
       <if test="workComfirm != null">
         work_comfirm = #{workComfirm,jdbcType=FLOAT},
