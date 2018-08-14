@@ -161,39 +161,40 @@
   </resultMap>
   
   <select id="listStaffMonthStatistics" resultMap="staffMonthStatisticsResultMap">
-	SELECT
-		w. MONTH,
-		e.staff_id staffId,
-		a.month_occur_rate monthOccurRate,
-		a.month_fill_rate monthFillRate,
-		r.ranking ranking,
-		r.count,
-		r.sumOfPoints sumOfPoints
-	FROM employee_t e	
-    JOIN work_time_sheet_t w ON w.staff_id = e.staff_id
-	LEFT JOIN work_atendance_t a ON a.staff_id = w.staff_id
-	AND a. MONTH = w. MONTH
-	LEFT JOIN (
 		SELECT
-			s.staff_id,
-			count(s.staff_id) count,
-			(@rowNum :=@rowNum + 1) ranking,
-			sum(s.points) sumOfPoints
+			r. MONTH,
+			r.staff_id staffId,
+			r.ranking ranking,
+			r.count,
+			r.sumOfPoints sumOfPoints,
+			a.month_occur_rate monthOccurRate,
+			a.month_fill_rate monthFillRate
 		FROM
-			work_time_sheet_t s,
-			(SELECT(@rowNum := 0)) b
+			(
+				SELECT
+					s. MONTH,
+					s.staff_id,
+					count(s.staff_id) count,
+					(@rowNum :=@rowNum + 1) ranking,
+					sum(s.points) sumOfPoints
+				FROM
+					work_time_sheet_t s,
+					(SELECT(@rowNum := 0)) b
+				GROUP BY
+					s. MONTH,
+					s.staff_id
+				ORDER BY
+					sumOfPoints
+			) r
+		JOIN employee_t e ON e.staff_id = r.staff_id
+		LEFT JOIN work_atendance_t a ON a.staff_id = r.staff_id
+		AND a. MONTH = r. MONTH
 		WHERE
-			s. MONTH = #{month,jdbcType=INTEGER}
-		GROUP BY
-			s.staff_id
-		ORDER BY
-			sumOfPoints
-	) r ON r.staff_id = w.staff_id
-	WHERE e. STATUS = 1
-	  AND e.is_sys = 0
-	  AND w. MONTH = #{month,jdbcType=INTEGER}
+			e. STATUS = 1
+		AND e.is_sys = 0
+	  AND r. MONTH = #{month,jdbcType=INTEGER}
     <if test="staffId != null and staffId!= '' ">
-	  AND w.staff_id = #{staffId,jdbcType=VARCHAR}
+	  AND r.staff_id = #{staffId,jdbcType=VARCHAR}
     </if>
   </select>
   
