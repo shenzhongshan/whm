@@ -283,6 +283,12 @@ public class ExcelImExportServiceImpl implements ExcelImExportService {
 			Cell monthCell = monthRow.createCell(0);
 			monthCell.setCellValue(thisMonth.toString().replaceFirst(year.toString(), year.toString()+"-"));
 			List<StaffMonthStatistics> monthStatistics = this.wtsRepo.listStaffMonthStatistics(thisMonth, null);
+			
+			Row staffTitleRow = reportSheet.createRow(rownum++);
+			createStaffTitle(staffTitleRow,styles);
+			Row WorkTimeSheetTitleRow = reportSheet.createRow(rownum++);
+			createWorkTimeSheetTitleCells(WorkTimeSheetTitleRow,styles);
+			
 			if (monthStatistics != null) {
 				for (StaffMonthStatistics s : monthStatistics) {
 					rownum = createStaffBlock(s, reportSheet,rownum,styles);
@@ -300,7 +306,7 @@ public class ExcelImExportServiceImpl implements ExcelImExportService {
         Map<String, CellStyle> styles = new HashMap<>();
         CellStyle style;
         Font titleFont = wb.createFont();
-        titleFont.setFontHeightInPoints((short)14);
+        titleFont.setFontHeightInPoints((short)12);
         titleFont.setBold(true);
         style = wb.createCellStyle();
         style.setAlignment(HorizontalAlignment.CENTER);
@@ -312,23 +318,34 @@ public class ExcelImExportServiceImpl implements ExcelImExportService {
 
         Font monthFont = wb.createFont();
         monthFont.setFontHeightInPoints((short)10);
-        monthFont.setColor(IndexedColors.WHITE.getIndex());
+        //monthFont.setColor(IndexedColors.WHITE.getIndex());
         style = wb.createCellStyle();
         style.setAlignment(HorizontalAlignment.CENTER);
         style.setVerticalAlignment(VerticalAlignment.CENTER);
-        style.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
+        style.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
         style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         style.setFont(monthFont);
         style.setWrapText(true);
         styles.put("worksheetHeader", style);
 
         Font stringFont = wb.createFont();
-        titleFont.setFontHeightInPoints((short)8);
+        stringFont.setFontHeightInPoints((short)10);
         style = wb.createCellStyle();
         style.setAlignment(HorizontalAlignment.CENTER);
         style.setWrapText(true);
         style.setFont(stringFont);
         styles.put("cellString", style);
+        
+        Font staffValueFont = wb.createFont();
+        staffValueFont.setFontHeightInPoints((short)10);
+        staffValueFont.setBold(true);
+        style = wb.createCellStyle();
+        style.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
+        style.setFillPattern(FillPatternType.SPARSE_DOTS);
+        style.setAlignment(HorizontalAlignment.CENTER);
+        style.setWrapText(true);
+        style.setFont(staffValueFont);
+        styles.put("cellStringStaff", style);
 
         style = wb.createCellStyle();
         style.setAlignment(HorizontalAlignment.CENTER);
@@ -368,12 +385,10 @@ public class ExcelImExportServiceImpl implements ExcelImExportService {
 	private Integer createStaffBlock(StaffMonthStatistics s, Sheet sheet, Integer rownum, Map<String, CellStyle> styles) {
 		Integer rn = rownum;
 		Person p = s.getStaff();
-		Row staffTitleRow = sheet.createRow(rn++);
-		Row staffValueRow = sheet.createRow(rn++);
-		createStaffCells(s, p, staffTitleRow, staffValueRow, styles);
+
 		
-		Row WorkTimeSheetTitleRow = sheet.createRow(rn++);
-		createWorkTimeSheetTitleCells(WorkTimeSheetTitleRow,styles);
+		Row staffValueRow = sheet.createRow(rn++);
+		createStaffCells(s, p, staffValueRow, styles);
 		List<WorkTimeSheet> list = s.getWorksheets();
 		if(list != null && list.size()>0) {
 			for(WorkTimeSheet w : list) {
@@ -503,84 +518,110 @@ public class ExcelImExportServiceImpl implements ExcelImExportService {
 	}
 
 
-
-
-
-	private void createStaffCells(StaffMonthStatistics s, Person p, Row staffTitleRow, Row staffValueRow, Map<String, CellStyle> styles) {
+	private void createStaffTitle(Row staffTitleRow,Map<String, CellStyle> styles) {
 		int c = 1;
 		Cell cell;
-		cell = staffTitleRow.createCell(c);
+		cell = staffTitleRow.createCell(c++);
 		cell.setCellValue("序号");
 		cell.setCellStyle(styles.get("staffTitle"));
-		cell = staffValueRow.createCell(c++);
-		setCellVaue(cell,s.getRanking());
-		cell.setCellStyle(styles.get("cellString"));
-		cell = staffTitleRow.createCell(c);
+
+		cell = staffTitleRow.createCell(c++);
 		cell.setCellValue("工号");
 		cell.setCellStyle(styles.get("staffTitle"));
-		cell = staffValueRow.createCell(c++);
-		setCellVaue(cell,p.getUsername());
-		cell.setCellStyle(styles.get("cellString"));
-		cell = staffTitleRow.createCell(c);
+
+		cell = staffTitleRow.createCell(c++);
 		cell.setCellValue("姓名");
 		cell.setCellStyle(styles.get("staffTitle"));
-		cell = staffValueRow.createCell(c++);
-		setCellVaue(cell,p.getStaffName());
-		cell.setCellStyle(styles.get("cellString"));
-		cell = staffTitleRow.createCell(c);
+
+		cell = staffTitleRow.createCell(c++);
 		cell.setCellValue("性别");
 		cell.setCellStyle(styles.get("staffTitle"));
-		cell = staffValueRow.createCell(c++);
-		setCellVaue(cell,p.gender());
-		cell.setCellStyle(styles.get("cellString"));
-		cell = staffTitleRow.createCell(c);
+
+		cell = staffTitleRow.createCell(c++);
 		cell.setCellValue("年龄");
 		cell.setCellStyle(styles.get("staffTitle"));
-		cell = staffValueRow.createCell(c++);
-		setCellVaue(cell,p.age());
-		cell.setCellStyle(styles.get("cellString"));
-		cell = staffTitleRow.createCell(c);
+
+		cell = staffTitleRow.createCell(c++);
 		cell.setCellValue("职务");
 		cell.setCellStyle(styles.get("staffTitle"));
-		cell = staffValueRow.createCell(c++);
-		setCellVaue(cell,CodeUtil.getJobTitle(p.getJobTitle()));
-		cell.setCellStyle(styles.get("cellString"));
-		cell = staffTitleRow.createCell(c);
+
+		cell = staffTitleRow.createCell(c++);
 		cell.setCellValue("职称");
 		cell.setCellStyle(styles.get("staffTitle"));
-		cell = staffValueRow.createCell(c++);
-		setCellVaue(cell,CodeUtil.getPosition(p.getPosition()));
-		cell.setCellStyle(styles.get("cellString"));
-		cell = staffTitleRow.createCell(c);
+
+		cell = staffTitleRow.createCell(c++);
 		cell.setCellValue("岗位层级");
 		cell.setCellStyle(styles.get("staffTitle"));
-		cell = staffValueRow.createCell(c++);
-		setCellVaue(cell,String.valueOf(p.getLevel()));
-		cell.setCellStyle(styles.get("cellString"));
-		cell = staffTitleRow.createCell(c);
+
+		cell = staffTitleRow.createCell(c++);
 		cell.setCellValue("本月工时识别率");
 		cell.setCellStyle(styles.get("staffTitle"));
-		cell = staffValueRow.createCell(c++);
-		setCellVaue(cell,s.getMonthOccurRate());
-		cell.setCellStyle(styles.get("cellString"));
-		cell = staffTitleRow.createCell(c);
+
+		cell = staffTitleRow.createCell(c++);
 		cell.setCellValue("本月工时填报率");
 		cell.setCellStyle(styles.get("staffTitle"));
-		cell = staffValueRow.createCell(c++);
-		setCellVaue(cell,s.getMonthOccurRate());
-		cell.setCellStyle(styles.get("cellString"));
-		cell = staffTitleRow.createCell(c);
+
+		cell = staffTitleRow.createCell(c++);
 		cell.setCellValue("本月总积点");
 		cell.setCellStyle(styles.get("staffTitle"));
-		cell = staffValueRow.createCell(c++);
-		setCellVaue(cell,s.getSumOfPoints());
-		cell.setCellStyle(styles.get("cellString"));
-		cell = staffTitleRow.createCell(c);
+
+		cell = staffTitleRow.createCell(c++);
 		cell.setCellValue("本月室排名");
 		cell.setCellStyle(styles.get("staffTitle"));
+	}
+
+
+	private void createStaffCells(StaffMonthStatistics s, Person p, Row staffValueRow, Map<String, CellStyle> styles) {
+		int c = 1;
+		Cell cell;
+		 
+		cell = staffValueRow.createCell(c++);
+		setCellVaue(cell,s.getRanking());
+		cell.setCellStyle(styles.get("cellStringStaff"));
+
+		cell = staffValueRow.createCell(c++);
+		setCellVaue(cell,p.getUsername());
+		cell.setCellStyle(styles.get("cellStringStaff"));
+
+		cell = staffValueRow.createCell(c++);
+		setCellVaue(cell,p.getStaffName());
+		cell.setCellStyle(styles.get("cellStringStaff"));
+
+		cell = staffValueRow.createCell(c++);
+		setCellVaue(cell,p.gender());
+		cell.setCellStyle(styles.get("cellStringStaff"));
+
+		cell = staffValueRow.createCell(c++);
+		setCellVaue(cell,p.age());
+		cell.setCellStyle(styles.get("cellStringStaff"));
+
+		cell = staffValueRow.createCell(c++);
+		setCellVaue(cell,CodeUtil.getJobTitle(p.getJobTitle()));
+		cell.setCellStyle(styles.get("cellStringStaff"));
+
+		cell = staffValueRow.createCell(c++);
+		setCellVaue(cell,CodeUtil.getPosition(p.getPosition()));
+		cell.setCellStyle(styles.get("cellStringStaff"));
+
+		cell = staffValueRow.createCell(c++);
+		setCellVaue(cell,String.valueOf(p.getLevel()));
+		cell.setCellStyle(styles.get("cellStringStaff"));
+
+		cell = staffValueRow.createCell(c++);
+		setCellVaue(cell,s.getMonthOccurRate());
+		cell.setCellStyle(styles.get("cellStringStaff"));
+
+		cell = staffValueRow.createCell(c++);
+		setCellVaue(cell,s.getMonthOccurRate());
+		cell.setCellStyle(styles.get("cellStringStaff"));
+
+		cell = staffValueRow.createCell(c++);
+		setCellVaue(cell,s.getSumOfPoints());
+		cell.setCellStyle(styles.get("cellStringStaff"));
+
 		cell = staffValueRow.createCell(c++);
 		setCellVaue(cell,s.getRanking()+"/"+s.getCount());
-		cell.setCellStyle(styles.get("cellString"));
+		cell.setCellStyle(styles.get("cellStringStaff"));
 	}
 
 
