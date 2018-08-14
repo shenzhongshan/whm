@@ -186,10 +186,9 @@
 			ORDER BY
 				sumOfPoints desc
 		) r
-	LEFT JOIN work_atendance_t a ON a.staff_id = r.staff_id
-	WHERE a. MONTH = #{month,jdbcType=INTEGER}
+	LEFT JOIN work_atendance_t a ON a.staff_id = r.staff_id and a. MONTH = #{month,jdbcType=INTEGER} 
     <if test="staffId != null and staffId!= '' ">
-	  AND r.staff_id = #{staffId,jdbcType=VARCHAR}
+	  WHERE r.staff_id = #{staffId,jdbcType=VARCHAR}
     </if>
   </select>
   
