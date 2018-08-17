@@ -39,7 +39,7 @@ public class WorkTimeSheetController {
     public List<WorkTimeSheet> list(@PathVariable("month") Long month) {
     	log.info("list Work Timesheets by current user, month:{}", month);
     	String staffId = Person.currentUsername();
-    	return wtsRepo.listByPage(staffId, month, 1L, 1000L);
+    	return wtsRepo.listByPage(staffId, month, 0L, 1000L);
     }
     
     @RequestMapping("/get/{id}")
