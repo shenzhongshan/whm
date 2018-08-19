@@ -162,7 +162,7 @@
   
   <select id="listStaffMonthStatistics" resultMap="staffMonthStatisticsResultMap">
 	SELECT
-	  a.month,
+	  r.month,
 		r.staff_id staffId,
 		r.ranking ranking,
 		(select count(e.staff_id) FROM employee_t e
@@ -173,6 +173,7 @@
 	FROM
 		(
 			SELECT
+			    s.month,
 				s.staff_id,
 				(@rowNum :=@rowNum + 1) ranking,
 				sum(s.points) sumOfPoints
