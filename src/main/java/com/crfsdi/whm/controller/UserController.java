@@ -90,7 +90,7 @@ public class UserController {
     
     @PostMapping("/resetPwd")
     public void resetPwd(@RequestBody Person user) {
-        user.setPassword(bCryptPasswordEncoder.encode("888888"));
+        user.setPassword(bCryptPasswordEncoder.encode(Person.DEFAULT_PASSWORD));
         userRepo.update(user);
     }
     
@@ -98,7 +98,7 @@ public class UserController {
     public void resetAdminPwd() {
     	Person user = new Person();
     	user.setUsername("admin");
-        user.setPassword(bCryptPasswordEncoder.encode("888888"));
+        user.setPassword(bCryptPasswordEncoder.encode(Person.DEFAULT_PASSWORD));
         userRepo.update(user);
     }
     
@@ -108,14 +108,14 @@ public class UserController {
         if(admin != null) {
         	Person user = new Person();
         	user.setUsername("admin");
-            user.setPassword(bCryptPasswordEncoder.encode("888888"));
+            user.setPassword(bCryptPasswordEncoder.encode(Person.DEFAULT_PASSWORD));
             userRepo.update(user);
         }else {
         	Person user = new Person();
         	user.setUsername("admin");
         	user.setStaffName("admin");
         	user.setSys(1);
-            user.setPassword(bCryptPasswordEncoder.encode("888888"));
+            user.setPassword(bCryptPasswordEncoder.encode(Person.DEFAULT_PASSWORD));
             userRepo.save(user);
         }
     }

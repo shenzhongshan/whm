@@ -13,6 +13,7 @@ import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.boot.configurationprocessor.json.JSONTokener;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -72,9 +73,17 @@ public class WechatUserController {
     
     @PostMapping("/bind")
     public void bind(@RequestParam String username, @RequestParam String password, @RequestParam String openid, HttpServletRequest req,HttpServletResponse res) {
+    	if(StringUtils.isEmpty(username) || StringUtils.isEmpty(openid)) {
+    		throw new RuntimeException("username or openid are not empty");
+    	}
     	log.info("bind wechat user, username:{},openid:{}", username, openid);
     	Person  user = userRepo.findByUsername(username);
+    	Person  userOpenId = userRepo.findByUsername(openid);
     	if(bCryptPasswordEncoder.matches(password, user.getPassword())) {
+        	if(userOpenId != null && !userOpenId.getId().equals(user.getId())) {
+        		userOpenId.setOpenId("");
+        		userRepo.update(userOpenId);
+        	}
     		user.setOpenId(openid);
         	userRepo.update(user);
     	}
