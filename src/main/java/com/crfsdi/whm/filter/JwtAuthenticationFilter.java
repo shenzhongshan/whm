@@ -3,7 +3,10 @@ package com.crfsdi.whm.filter;
 import io.jsonwebtoken.Jwts;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -12,9 +15,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
-    public JwtAuthenticationFilter(AuthenticationManager authManager) {
+    private UserDetailsService userDetailsService;
+    public void setUserDetailsService(UserDetailsService userDetailsService) {
+		this.userDetailsService = userDetailsService;
+	}
+
+	public JwtAuthenticationFilter(AuthenticationManager authManager) {
         super(authManager);
     }
 
@@ -46,7 +55,13 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
                     .getSubject();
 
             if (user != null) {
-                return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
+                UserDetails  usedetails = userDetailsService.loadUserByUsername(user);
+                Collection<? extends GrantedAuthority> authorities = new ArrayList<>();
+                if(usedetails != null && usedetails.getAuthorities() != null) {
+                	authorities = usedetails.getAuthorities();
+                }
+
+				return new UsernamePasswordAuthenticationToken(user, null, authorities);
             }
             return null;
         }

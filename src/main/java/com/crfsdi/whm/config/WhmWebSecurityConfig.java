@@ -1,9 +1,6 @@
 package com.crfsdi.whm.config;
 
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,10 +16,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.cors.CorsUtils;
 
 import com.crfsdi.whm.filter.JWTLoginFilter;
@@ -30,7 +23,7 @@ import com.crfsdi.whm.filter.JwtAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled=true)
+@EnableGlobalMethodSecurity(prePostEnabled=true,jsr250Enabled=true)
 public class WhmWebSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -48,14 +41,17 @@ public class WhmWebSecurityConfig extends WebSecurityConfigurerAdapter {
     
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().disable().csrf().disable().authorizeRequests()
+        JWTLoginFilter jwtLoginFilter = new JWTLoginFilter(authenticationManager());
+		JwtAuthenticationFilter jwtAuthFilter = new JwtAuthenticationFilter(authenticationManager());
+		jwtAuthFilter.setUserDetailsService(userDetailsService);
+		http.cors().disable().csrf().disable().authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/users/signup","/users/resetAdminPwd","/users/resetAdmin","/wechat/bind","/wechat/login","/login").permitAll()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .anyRequest().authenticated()
                 .and().headers().frameOptions().disable()
                 .and()
-                .addFilter(new JWTLoginFilter(authenticationManager()))
-                .addFilter(new JwtAuthenticationFilter(authenticationManager()));
+                .addFilter(jwtLoginFilter)
+                .addFilter(jwtAuthFilter);
     }
 
     @Override
