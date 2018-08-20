@@ -46,7 +46,7 @@
     select 
     <include refid="Base_Column_List" />
     from projects_t
-    where prj_id = #{prj_id,jdbcType=INTEGER}
+    where prj_id &gt; 0 and prj_id = #{prj_id,jdbcType=INTEGER}
   </select>
   
   <select id="listByMonth" parameterType="java.lang.Long" resultMap="BaseResultMap">
