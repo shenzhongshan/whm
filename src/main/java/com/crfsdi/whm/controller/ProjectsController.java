@@ -56,12 +56,19 @@ public class ProjectsController {
     public void delete(@PathVariable("id") Long id) {
     	log.info("delete project, id: {}", id);
     	repo.delete(id);
-    }
+    } 
     
     @RequestMapping("/list/{month}")
     public List<Project> list(@PathVariable("month") Long month) {
     	log.info("list project by month, month: {}", month);
     	List<Project> prjs = repo.listByMonth(month);
+    	return prjs;
+    }
+    
+    @RequestMapping("/listAvailable/{month}")
+    public List<Project> listAvailable(@PathVariable("month") Long month) {
+    	log.info("list available project by month, month: {}", month);
+    	List<Project> prjs = repo.listByMonth(month,1L);
     	return prjs;
     }
     
