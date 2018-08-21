@@ -8,6 +8,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 
 public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
@@ -49,6 +51,14 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
                                             HttpServletResponse res,
                                             FilterChain chain,
                                             Authentication auth) throws IOException, ServletException {
+    	Boolean isAdmin = "admin".equalsIgnoreCase(((User) auth.getPrincipal()).getUsername());
+    	Collection<? extends GrantedAuthority> auths = auth.getAuthorities();
+    	if(!isAdmin && auths!=null && !auths.isEmpty()) {
+    		for(GrantedAuthority  r : auths) {
+        		isAdmin = "ROLE_ADMIN".equalsIgnoreCase(r!=null?r.getAuthority():"");
+        		if(isAdmin) break;
+    		}
+    	}
 
         String token = Jwts.builder()
                 .setSubject(((User) auth.getPrincipal()).getUsername())
@@ -56,5 +66,6 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
                 .signWith(SignatureAlgorithm.HS512, "WHMJwtSecret#@!$%^")
                 .compact();
         res.addHeader("Authorization", "Bearer " + token);
+        res.addHeader("is_admin", isAdmin.toString());
     }
 }
