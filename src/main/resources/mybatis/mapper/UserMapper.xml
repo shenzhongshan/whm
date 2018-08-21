@@ -47,7 +47,7 @@
   
   <delete id="delete" parameterType="java.lang.Long">
     delete from employee_t
-    where id = #{id,jdbcType=INTEGER}
+    where is_sys = 0 and id = #{id,jdbcType=INTEGER}
   </delete>
   
   <select id="findByUsername" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -65,20 +65,20 @@
     from employee_t e
     left join roles_t r on r.user_id = e.staff_id
     <where>
+        e.is_sys = 0
 	    <if test="username != null and username != '' ">
-	        e.staff_id like CONCAT('%',#{username,jdbcType=VARCHAR},'%')
+	        and e.staff_id like CONCAT('%',#{username,jdbcType=VARCHAR},'%')
 	    </if>
 	    <if test="staffName != null and staffName != '' ">
 	       and e.name like CONCAT('%',#{staffName,jdbcType=VARCHAR},'%')
 	    </if>
-	    and e.is_sys != 1
     </where>
     LIMIT #{page,jdbcType=INTEGER},#{size,jdbcType=INTEGER}
   </select>
   
   <delete id="deleteByUsername" parameterType="java.lang.String">
     delete from employee_t
-    where staff_id = #{username,jdbcType=VARCHAR}
+    where is_sys = 0 and staff_id = #{username,jdbcType=VARCHAR}
   </delete>
   
   <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="com.crfsdi.whm.model.Person">
