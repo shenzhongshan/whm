@@ -109,6 +109,7 @@ public class UserController {
     	}
     	Person user = new Person();
     	user.setUsername("admin");
+    	user.setSys(1);
         user.setPassword(bCryptPasswordEncoder.encode(Person.DEFAULT_PASSWORD));
         userRepo.update(user);
         log.info("resetAdminPwd success!");
@@ -126,6 +127,7 @@ public class UserController {
         if(admin != null) {
         	Person user = new Person();
         	user.setUsername("admin");
+        	user.setSys(1);
             user.setPassword(bCryptPasswordEncoder.encode(Person.DEFAULT_PASSWORD));
             userRepo.update(user);
         }else {
