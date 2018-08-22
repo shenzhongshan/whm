@@ -2,10 +2,12 @@ package com.crfsdi.whm.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,6 +45,7 @@ public class UserController {
     }
     
     @PostMapping("/save")
+    @PreAuthorize("'admin'==authentication.principal or hasRole('ADMIN')")
     public Person save(@RequestBody Person user) {
     	log.info("save user: {}", user);
     	if(user.getId() != null) {
@@ -54,6 +57,7 @@ public class UserController {
     }
     
     @PostMapping("/add")
+    @PreAuthorize("'admin'==authentication.principal or hasRole('ADMIN')")
     public Person add(@RequestBody Person user) {
     	log.info("add user: {}", user);
     	userRepo.save(user);
@@ -61,18 +65,21 @@ public class UserController {
     }
     
     @PostMapping("/update")
+    @PreAuthorize("'admin'==authentication.principal or hasRole('ADMIN')")
     public void update(@RequestBody Person user) {
     	log.info("update user: {}",user);
     	userRepo.update(user);
     }
     
     @RequestMapping("/del/{id}")
+    @PreAuthorize("'admin'==authentication.principal or hasRole('ADMIN')")
     public void delete(@PathVariable("id") Long id) {
     	log.info("delete user, id: {}", id);
     	userRepo.delete(id);
     }
     
     @RequestMapping("/list/{page},{size}")
+    @PreAuthorize("'admin'==authentication.principal or hasRole('ADMIN')")
     public List<Person> list(@RequestBody Person user,@PathVariable("page") Long page, @PathVariable("size") Long size) {
     	log.info("list users, page:{},page size:{},username:{},staffName:{}",page,size,user.getUsername(),user.getStaffName());
     	String uname = user.getUsername();
@@ -89,21 +96,32 @@ public class UserController {
     }
     
     @PostMapping("/resetPwd")
+    @PreAuthorize("'admin'==authentication.principal or hasRole('ADMIN')")
     public void resetPwd(@RequestBody Person user) {
         user.setPassword(bCryptPasswordEncoder.encode(Person.DEFAULT_PASSWORD));
         userRepo.update(user);
     }
     
     @RequestMapping("/resetAdminPwd")
-    public void resetAdminPwd() {
+    public String resetAdminPwd(HttpServletRequest request) {
+    	if(!isLocalIp(request)) {
+    		return "No permit!";
+    	}
     	Person user = new Person();
     	user.setUsername("admin");
         user.setPassword(bCryptPasswordEncoder.encode(Person.DEFAULT_PASSWORD));
         userRepo.update(user);
+        log.info("resetAdminPwd success!");
+        return "resetAdminPwd success!";
     }
     
-    @RequestMapping("/resetAdmin")
-    public void resetAdmin() {
+
+
+	@RequestMapping("/resetAdmin")
+    public String resetAdmin(HttpServletRequest request) {
+    	if(!isLocalIp(request)) {
+    		return "No permit!";
+    	}
         Person admin = userRepo.findByUsername("admin");
         if(admin != null) {
         	Person user = new Person();
@@ -118,11 +136,53 @@ public class UserController {
             user.setPassword(bCryptPasswordEncoder.encode(Person.DEFAULT_PASSWORD));
             userRepo.save(user);
         }
+        log.info("resetAdmin success!");
+        return "resetAdmin success!";
     }
     
     @PostMapping("/changePwd")
     public void changePwd(@RequestBody Person user) {
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        userRepo.update(user);
+    	String  username = Person.currentUsername();
+    	Person user0 = new Person();
+    	user0.setUsername(username);
+    	user0.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        userRepo.update(user0);
     }
+    
+    private boolean isLocalIp(HttpServletRequest request) {
+		try {
+			return "localhost".equalsIgnoreCase(getIpAddr(request)) || "0:0:0:0:0:0:0:1".equalsIgnoreCase(getIpAddr(request));
+		} catch (Exception e) {
+			log.warn("isLocalIp: {}", e.getMessage());
+			return false;
+		}
+	}
+    
+    private static final String getIpAddr(final HttpServletRequest request)  
+            throws Exception {  
+        if (request == null) {  
+            throw (new Exception("getIpAddr method HttpServletRequest Object is null"));  
+        }  
+        String ipString = request.getHeader("x-forwarded-for");  
+        if (StringUtils.isEmpty(ipString) || "unknown".equalsIgnoreCase(ipString)) {  
+            ipString = request.getHeader("Proxy-Client-IP");  
+        }  
+        if (StringUtils.isEmpty(ipString) || "unknown".equalsIgnoreCase(ipString)) {  
+            ipString = request.getHeader("WL-Proxy-Client-IP");  
+        }  
+        if (StringUtils.isEmpty(ipString) || "unknown".equalsIgnoreCase(ipString)) {  
+            ipString = request.getRemoteHost(); 
+        }  
+      
+        // 多个路由时，取第一个非unknown的ip  
+        final String[] arr = ipString.split(",");  
+        for (final String str : arr) {  
+            if (!"unknown".equalsIgnoreCase(str)) {  
+                ipString = str;  
+                break;  
+            }  
+        }  
+        log.info("getIpAddr, ip: {}", ipString);
+        return ipString;  
+    } 
 }

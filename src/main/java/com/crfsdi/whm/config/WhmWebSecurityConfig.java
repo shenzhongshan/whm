@@ -45,7 +45,8 @@ public class WhmWebSecurityConfig extends WebSecurityConfigurerAdapter {
 		JwtAuthenticationFilter jwtAuthFilter = new JwtAuthenticationFilter(authenticationManager());
 		jwtAuthFilter.setUserDetailsService(userDetailsService);
 		http.cors().disable().csrf().disable().authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/users/signup","/users/resetAdminPwd","/users/resetAdmin","/wechat/bind","/wechat/login","/login").permitAll()
+                .antMatchers(HttpMethod.POST, "/users/signup","/wechat/bind","/wechat/login","/login").permitAll()
+                .antMatchers(HttpMethod.GET, "/users/resetAdminPwd","/users/resetAdmin").permitAll()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .anyRequest().authenticated()
                 .and().headers().frameOptions().disable()

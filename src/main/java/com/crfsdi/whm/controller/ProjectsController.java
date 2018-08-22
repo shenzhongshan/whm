@@ -3,6 +3,7 @@ package com.crfsdi.whm.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,6 +30,7 @@ public class ProjectsController {
     }
     
     @PostMapping("/save")
+    @PreAuthorize("'admin'==authentication.principal or hasRole('ADMIN')")
     public Project save(@RequestBody Project prj) {
     	log.info("save project: {}",prj);
     	if(prj.getId() != null) {
@@ -40,6 +42,7 @@ public class ProjectsController {
     }
     
     @PostMapping("/add")
+    @PreAuthorize("'admin'==authentication.principal or hasRole('ADMIN')")
     public Project add(@RequestBody Project prj) {
     	log.info("add project: {}",prj);
     	repo.save(prj);
@@ -47,12 +50,14 @@ public class ProjectsController {
     }
     
     @PostMapping("/update")
+    @PreAuthorize("'admin'==authentication.principal or hasRole('ADMIN')")
     public void update(@RequestBody Project prj) {
     	log.info("update project: {}",prj);
     	repo.update(prj);
     }
     
     @RequestMapping("/del/{id}")
+    @PreAuthorize("'admin'==authentication.principal or hasRole('ADMIN')")
     public void delete(@PathVariable("id") Long id) {
     	log.info("delete project, id: {}", id);
     	repo.delete(id);
@@ -73,6 +78,7 @@ public class ProjectsController {
     }
     
     @PostMapping("/confirm/{month}")
+    @PreAuthorize("'admin'==authentication.principal or hasRole('ADMIN')")
     public void confirm(@PathVariable("month") Long month) {
     	log.info("comfirm project by month, month: {}", month);
     	repo.confirmByMonth(month);

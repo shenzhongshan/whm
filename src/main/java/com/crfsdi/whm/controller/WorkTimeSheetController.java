@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -100,6 +101,7 @@ public class WorkTimeSheetController {
     }
     
     @RequestMapping("/report/{month},{staffId}")
+    @PreAuthorize("'admin'==authentication.principal or hasRole('ADMIN')")
     public List<StaffMonthStatistics> report(@PathVariable("month") Long month,@PathVariable("staffId") String  staffId) {
     	log.info("report Work Timesheet, month: {}, staff id:{}", month, staffId);
     	return wtsRepo.listStaffMonthStatistics(month, staffId);
