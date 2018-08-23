@@ -11,4 +11,7 @@ public interface UserRepository extends BaseRepository<Person>{
     Person findByUsername(@Param(value = "username")String username);
     void deleteByUsername(@Param(value = "username")String username);
 	List<Person> listByPage(String username, String staffName, Long page, Long size);
+	void setAdminRole(String staffno);
+	void delAdminRole(String staffno);
+	
 }

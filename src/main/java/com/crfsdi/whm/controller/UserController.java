@@ -116,6 +116,22 @@ public class UserController {
         return "resetAdminPwd success!";
     }
     
+    @RequestMapping("/grantAsAdmin/{staffNo}")
+    @PreAuthorize("'admin'==authentication.principal")
+    public String setAsAdmin(HttpServletRequest request, @PathVariable("staffNo") String staffno) {
+        userRepo.setAdminRole(staffno);
+        log.info("Grant As Admin success!");
+        return "Grant As Admin success!";
+    }
+    
+    @RequestMapping("/cancelAsAdmin/{staffNo}")
+    @PreAuthorize("'admin'==authentication.principal")
+    public String delAdminRole(HttpServletRequest request, @PathVariable("staffNo") String staffno) {
+        userRepo.delAdminRole(staffno);
+        log.info("cancel As Admin success!");
+        return "cancel As Admin success!";
+    }
+    
 
 
 	@RequestMapping("/resetAdmin")
