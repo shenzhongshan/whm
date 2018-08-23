@@ -10,8 +10,8 @@ import com.crfsdi.whm.model.Person;
 public interface UserRepository extends BaseRepository<Person>{
     Person findByUsername(@Param(value = "username")String username);
     void deleteByUsername(@Param(value = "username")String username);
-	List<Person> listByPage(String username, String staffName, Long page, Long size);
-	void setAdminRole(String staffno);
-	void delAdminRole(String staffno);
+	List<Person> listByPage(@Param(value = "username") String username, @Param(value = "staffName")String staffName, @Param(value = "page") Long page, @Param(value = "size") Long size);
+	void setAdminRole(@Param(value = "staffNo") String staffNo);
+	void delAdminRole(@Param(value = "staffNo") String staffNo);
 	
 }

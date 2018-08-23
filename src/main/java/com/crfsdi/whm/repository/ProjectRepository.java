@@ -8,11 +8,11 @@ import org.apache.ibatis.annotations.Param;
 import com.crfsdi.whm.model.Project;
 @Mapper
 public interface ProjectRepository extends BaseRepository<Project>{
-    Project findByPrjId(Long prjId);
+    Project findByPrjId(@Param(value = "prjId") Long prjId);
 
 	List<Project> listByMonth(@Param(value = "month") Long month);
 	List<Project> listByMonth(@Param(value = "month") Long month, @Param(value = "status")Long status);
 
-	void confirmByMonth(Long month);
+	void confirmByMonth(@Param(value = "month") Long month);
 
 }

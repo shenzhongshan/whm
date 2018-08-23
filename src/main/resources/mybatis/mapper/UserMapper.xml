@@ -140,7 +140,7 @@
   </update>
   <insert id="setAdminRole" parameterType="java.lang.String">
       INSERT INTO roles_t(user_id, role_name) select #{staffNo,jdbcType=VARCHAR},'ROLE_ADMIN' from DUAL 
-            WHERE NOT EXISTS(SELECT role_name FROM roles_t WHERE user_id = #{staffNo,jdbcType=VARCHAR} and role_name = 'ROLE_ADMIN');
+            WHERE NOT EXISTS(SELECT r.role_name FROM employee_t e, roles_t r WHERE e.staff_id = r.user_id and e.staff_id = #{staffNo,jdbcType=VARCHAR} and r.role_name = 'ROLE_ADMIN');
   </insert>
   <delete id="delAdminRole" parameterType="java.lang.String">
       delete from roles_t
