@@ -114,7 +114,23 @@ public class ExcelImExportServiceImpl implements ExcelImExportService {
 		   log.info("Import row end: {}.", cells);
 	       return cells;
 		});
-		this.waRepo.saveMore(rows);
+		for(WorkAtendance wa : rows) {
+			try {
+				List<WorkAtendance> list = this.waRepo.listByPage(wa.getStaffId(), month, 0L, 999L);
+				if(list != null && !list.isEmpty()) {
+					WorkAtendance dwa = list.get(0);
+					dwa.setMonthFillRate(wa.getMonthFillRate());
+					dwa.setMonthOccurRate(wa.getMonthOccurRate());
+					this.waRepo.update(dwa);
+				}else {
+					this.waRepo.save(wa);
+				}
+
+			}catch(Exception e) {
+				log.warn("保存或更新考勤信息错误,{}", e.getMessage());
+			}
+
+		}
 	}
 
 
