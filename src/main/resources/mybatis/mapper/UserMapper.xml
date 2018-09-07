@@ -138,5 +138,12 @@
     </set>
     where staff_id = #{username,jdbcType=VARCHAR}
   </update>
-
+  <insert id="setAdminRole" parameterType="java.lang.String">
+      INSERT INTO roles_t(user_id, role_name) select e.staff_id, 'ROLE_ADMIN' from employee_t e 
+            WHERE e.staff_id = #{staffNo,jdbcType=VARCHAR} and NOT EXISTS(SELECT r.role_name FROM roles_t r WHERE e.staff_id = r.user_id and r.role_name = 'ROLE_ADMIN');
+  </insert>
+  <delete id="delAdminRole" parameterType="java.lang.String">
+      delete from roles_t
+            WHERE user_id = #{staffNo,jdbcType=VARCHAR} and role_name = 'ROLE_ADMIN';
+  </delete>
 </mapper>
