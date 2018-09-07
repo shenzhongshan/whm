@@ -13,6 +13,9 @@ public class Project {
     private String standard;
     private String type;
     private Double scale;
+    private Double co;//金额(亿元)
+    private Double le;//长度(km)
+    private Double te;//地形等级
     private Integer status = 0;
     private Date createDate;
     private Date UpdateDate;
