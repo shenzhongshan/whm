@@ -9,6 +9,10 @@
     <result column="prj_standard" jdbcType="VARCHAR" property="standard" />
     <result column="prj_type" jdbcType="VARCHAR" property="type" />
     <result column="prj_scale" jdbcType="DOUBLE" property="scale" />
+    <result column="prj_scale" jdbcType="DOUBLE" property="scale" />
+    <result column="prj_le" jdbcType="DOUBLE" property="le" />
+    <result column="prj_co" jdbcType="DOUBLE" property="co" />
+    <result column="prj_te" jdbcType="DOUBLE" property="te" />
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
     <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
@@ -21,6 +25,9 @@
 	prj_standard,
 	prj_type,
 	prj_scale,
+	prj_le,
+	prj_co,
+	prj_te,
 	status,
 	create_date,
 	update_date
@@ -32,6 +39,9 @@
 	prj_standard,
 	prj_type,
 	prj_scale,
+	prj_le,
+	prj_co,
+	prj_te,
 	status
   </sql>
   
@@ -68,6 +78,7 @@
     insert into projects_t (<include refid="Base_Column_List_for_insert" />)
     values (0, #{month,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
       #{standard,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{scale,jdbcType=DOUBLE},
+      #{le,jdbcType=DOUBLE},#{co,jdbcType=DOUBLE},#{te,jdbcType=DOUBLE},
       #{status,jdbcType=INTEGER}
     )
   </insert>
@@ -78,6 +89,7 @@
        <foreach collection="list" item="obj" index="index" separator="," > 
 	      (0, #{obj.month,jdbcType=VARCHAR}, #{obj.name,jdbcType=VARCHAR}, 
 	      #{obj.standard,jdbcType=VARCHAR}, #{obj.type,jdbcType=VARCHAR}, #{obj.scale,jdbcType=DOUBLE},
+          #{le,jdbcType=DOUBLE},#{co,jdbcType=DOUBLE},#{te,jdbcType=DOUBLE},
 	      #{obj.status,jdbcType=INTEGER})
        </foreach> 
   </insert>
@@ -99,6 +111,15 @@
       </if>
       <if test="scale != null">
         prj_scale = #{scale,jdbcType=DOUBLE},
+      </if>
+      <if test="le != null">
+        prj_le = #{le,jdbcType=DOUBLE},
+      </if>
+      <if test="co != null">
+        prj_co = #{co,jdbcType=DOUBLE},
+      </if>
+      <if test="te != null">
+        prj_te = #{te,jdbcType=DOUBLE},
       </if>
       <if test="status != null">
         status = #{status,jdbcType=INTEGER},

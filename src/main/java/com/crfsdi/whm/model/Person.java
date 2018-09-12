@@ -28,13 +28,13 @@ public class Person {
     private Date UpdateDate;
     private List<Role> roles;
     
-    public String age() {
+    public int age() {
     	if(this.getBirthDate()==null) {
-    		return "";
+    		return 0;
     	}else {
     		Calendar ca = Calendar.getInstance();
     		ca.setTime(this.getBirthDate());
-    		return String.valueOf(Calendar.getInstance().get(Calendar.YEAR)- ca.get(Calendar.YEAR));
+    		return Calendar.getInstance().get(Calendar.YEAR)- ca.get(Calendar.YEAR);
     	}
     }
     

@@ -16,6 +16,7 @@
     <result column="points" jdbcType="FLOAT" property="points" />
     <result column="status" jdbcType="INTEGER" property="status" />
     <association property="project" column="prj_id" select="com.crfsdi.whm.repository.ProjectRepository.findByPrjId"/>
+    <association property="staff" column="staff_id" select="com.crfsdi.whm.repository.UserRepository.findByUsername"/>
   </resultMap>
   <sql id="Base_Column_List">
 	id,
