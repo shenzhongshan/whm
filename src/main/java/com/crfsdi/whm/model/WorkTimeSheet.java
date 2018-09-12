@@ -7,6 +7,8 @@ import lombok.Data;
 
 @Data
 public class WorkTimeSheet {
+	private static final String[] TYPE_PRES = {"院控铁路","自揽铁路","自揽公路","自揽市政","科研业建"};
+	private static final String[] POSITION_PRES = {"总体","副总体","专业设计负责人","技术队长","内业组长"};
 	private Long id;
 	private String staffId;
 	private Long month;
@@ -52,7 +54,37 @@ public class WorkTimeSheet {
 	}
 	//长度系数 A
 	public Double getCa(){
-		return 0D; //CoefUtil.getCa(this.getPrjPosition(),this.getProject().getLe());
+		if(!check()) {
+			return 0D;
+		}
+		String prjType = this.getProject().getType();
+		if(prjType.startsWith(TYPE_PRES[0])
+				&& this.getPrjPosition().startsWith(POSITION_PRES[0])
+				&& this.getPrjPosition().startsWith(POSITION_PRES[1])
+				&& this.getPrjPosition().startsWith(POSITION_PRES[2])
+				&& this.getPrjPosition().startsWith(POSITION_PRES[3])
+				&& this.getPrjPosition().startsWith(POSITION_PRES[4])
+				) {
+			if(this.getProject().getLe()<=100) {
+				return 1.0D;
+			}else if(this.getProject().getLe()<=300) {
+				return 1.0D + (this.getProject().getLe()-100)* 0.1 / 100;
+			}else if(this.getProject().getLe()<=500) {
+				return 1.2D + (this.getProject().getLe()-100)* 0.1 / 200;
+			}else {
+				return 1.3D;
+			}
+			
+		}else {
+			
+		}
+		return 0D; 
+
+	}
+	private boolean check() {
+		return this.getProject()!=null 
+				&& this.getProject().getType()!=null 
+				&& this.getPrjPosition()!=null;
 	}
 	//投资系数 B
 	public Double getCb(){
