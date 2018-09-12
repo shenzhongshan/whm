@@ -89,7 +89,7 @@
        <foreach collection="list" item="obj" index="index" separator="," > 
 	      (0, #{obj.month,jdbcType=VARCHAR}, #{obj.name,jdbcType=VARCHAR}, 
 	      #{obj.standard,jdbcType=VARCHAR}, #{obj.type,jdbcType=VARCHAR}, #{obj.scale,jdbcType=DOUBLE},
-          #{le,jdbcType=DOUBLE},#{co,jdbcType=DOUBLE},#{te,jdbcType=DOUBLE},
+          #{obj.le,jdbcType=DOUBLE},#{obj.co,jdbcType=DOUBLE},#{obj.te,jdbcType=DOUBLE},
 	      #{obj.status,jdbcType=INTEGER})
        </foreach> 
   </insert>

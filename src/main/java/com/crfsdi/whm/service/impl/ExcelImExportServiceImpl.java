@@ -458,7 +458,7 @@ public class ExcelImExportServiceImpl implements ExcelImExportService {
 		cell.setCellStyle(styles.get("cellString"));
 		//("项目规模");
 		cell = WorkTimeSheetRow.createCell(c++);
-		setCellVaue(cell,prj!=null?prj.getScale():null);
+		setCellVaue(cell,prj!=null?prj.getCo():null);
 		cell.setCellStyle(styles.get("cellString"));
 		//("项目类型");
 		cell = WorkTimeSheetRow.createCell(c++);

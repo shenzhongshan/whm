@@ -20,7 +20,7 @@ public class WorkTimeSheet {
 	private Date endDate;
 	private Date createTime;
 	private Date updateTime;
-	private Double workComfirm;//填入的工效比例
+	private Double workComfirm = 100.0D;//填入的工效比例
 	//个人绩效工天 = 项目延续天数 *（长度系数 A + 投资系数 B + 地形系 数 C-2） * 项目 类别系数 D*岗位系数 E * 工效比例 F
 	private Double points;//绩效工天
 	private Integer status;
@@ -44,7 +44,7 @@ public class WorkTimeSheet {
 	}
 	
 	public double getCoef() {
-		return (this.getCa() + this.getCb() + this.getCc() - 2) * this.getCd() * this.getCe() * this.getCf();
+		return (this.getCa() + this.getCb() + this.getCc() - 2) * this.getCd() * this.getCe() * this.getCf()/100;
 	}
 	public long getDays() {
 		Calendar caStart = Calendar.getInstance();
