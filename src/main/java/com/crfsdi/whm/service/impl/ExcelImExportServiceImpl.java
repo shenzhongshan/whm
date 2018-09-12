@@ -245,17 +245,34 @@ public class ExcelImExportServiceImpl implements ExcelImExportService {
 			    	 prj.setStandard(StringUtils.trim(c.getStringCellValue()));
 			     }
 			     
-			     if(colIx == 3) {//项目规模
+			     if(colIx == 3) {//项目长度km
 			    	 if(c.getCellTypeEnum()==CellType.NUMERIC) {
-			    		 prj.setScale(c.getNumericCellValue());
+			    		 prj.setLe(c.getNumericCellValue());
 			    	 }else {
 				    	 String val = StringUtils.trim(c.getStringCellValue());
-				    	 prj.setScale(Double.parseDouble(val)); 
+				    	 prj.setLe(Double.parseDouble(val)); 
 			    	 }
 
 			     }
-			     
-			     if(colIx == 4) {//项目类型
+			     if(colIx == 4) {//项目投资(亿元)
+			    	 if(c.getCellTypeEnum()==CellType.NUMERIC) {
+			    		 prj.setCo(c.getNumericCellValue());
+			    	 }else {
+				    	 String val = StringUtils.trim(c.getStringCellValue());
+				    	 prj.setCo(Double.parseDouble(val)); 
+			    	 }
+
+			     }
+			     if(colIx == 5) {//项目地形等级
+			    	 if(c.getCellTypeEnum()==CellType.NUMERIC) {
+			    		 prj.setTe(c.getNumericCellValue());
+			    	 }else {
+				    	 String val = StringUtils.trim(c.getStringCellValue());
+				    	 prj.setTe(Double.parseDouble(val)); 
+			    	 }
+
+			     }
+			     if(colIx == 6) {//项目类型
 			    	 prj.setType(StringUtils.trim(c.getStringCellValue()));
 			     }
 			     
