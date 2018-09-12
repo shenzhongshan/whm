@@ -37,7 +37,7 @@ public class WorkTimeSheet {
 	}
 	
 	public Double getPoints() {
-		if(this.points!=null && this.points > Double.MIN_VALUE) {
+		if(this.points!=null && this.points > 1D) {
 			return this.points;
 		}
 		return this.getDays() * getCoef();
