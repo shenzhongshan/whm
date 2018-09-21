@@ -53,6 +53,9 @@ CREATE TABLE `projects_t` (
   `status` tinyint(4) DEFAULT '0' COMMENT '0-导入,1-可用',
   `create_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `update_date` timestamp NULL DEFAULT NULL,
+  `prj_le`  decimal(12,0) NULL DEFAULT 0 COMMENT '项目正线长度' ,
+  `prj_co`  decimal(12,0) NULL DEFAULT 0 COMMENT '项目总投资(亿元)' ,
+  `prj_te`  decimal(12,0) NULL DEFAULT 0 COMMENT '项目地形等级' ,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=266 DEFAULT CHARSET=utf8;
 
