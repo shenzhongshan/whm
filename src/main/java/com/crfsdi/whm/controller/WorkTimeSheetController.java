@@ -107,5 +107,12 @@ public class WorkTimeSheetController {
     	return wtsRepo.listStaffMonthStatistics(month, staffId);
     }
     
-    
+    @RequestMapping("/eval/{id},{wrate}")
+    @PreAuthorize("'admin'==authentication.principal or hasRole('ADMIN')")
+    public Double report(@PathVariable("id") Long  id, @PathVariable("wrate") Double wrate) {
+    	log.info("eval Work Timesheet, id: {}, wrate :{}", id, wrate);
+    	WorkTimeSheet wst = wtsRepo.load(id);
+    	wst.setCf(wrate*1.0D);
+    	return wst.calcPoints();
+    }  
 }

@@ -45,4 +45,9 @@ com:
         weixin-appid: wx9d2fed9eddc822e0
         weixin-secret: 23795b455aa61d54a18c0251271d3460
         
+logging:
+    level:
+        root: WARN
+        org.springframework.web: ERROR
+        
         
